@@ -1,0 +1,22 @@
+.wrapper {
+    display: flex;
+    column-gap: 2rem;
+}
+
+.side-images {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.3rem;
+}
+
+.selected-image {
+    position: relative;
+    width: 18rem;
+    height: 20rem;
+}
+
+.image-button {
+    position: relative;
+    width: 2.813rem;
+    height: 2.813rem;
+}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@twa-dev/sdk": "^8.0.1",
+    "@woocommerce/woocommerce-rest-api": "^1.0.1",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -21,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/woocommerce__woocommerce-rest-api": "^1.0.5",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "sass": "^1.83.4",

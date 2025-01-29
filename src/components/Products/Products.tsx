@@ -18,35 +18,20 @@ async function Products() {
             {response.data.map((product: any) => (
                 <ProductCard
                     key={product.id}
-                    imgPath={product.images[0].src}
-                    phoneModel={
+                    image={product.images[0].src}
+                    brands={
                         product.attributes.filter(
                             (attribute: any) => attribute.name === "Phone Brand"
                         )[0]?.options
                     }
-                    productName={product.name}
-                    productPrice={product.price}
-                    productID={product.id}
+                    name={product.name}
+                    price={product.price}
+                    id={product.id}
+                    attributes={product.attributes}
+                    categories={product.categories}
+                    quantity={0}
                 />
             ))}
-            {/* <ProductCard
-                imgPath="/6822815843.webp"
-                productName="Aurora Elite MagSafe Case"
-                phoneModel="iPhone 15 Pro"
-                productPrice="1950"
-            />
-            <ProductCard
-                imgPath="/7038553042.webp"
-                productName="Air Grip MagSafe Case"
-                phoneModel="iPhone 15 Pro Max"
-                productPrice="1350"
-            />
-            <ProductCard
-                imgPath="/7038726579.webp"
-                productName="Air Grip MagSafe Case"
-                phoneModel="S24 Ultra"
-                productPrice="2020"
-            /> */}
         </div>
     );
 }

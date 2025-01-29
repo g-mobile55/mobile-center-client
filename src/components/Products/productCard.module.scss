@@ -46,3 +46,16 @@
 .image {
     border-radius: 3px;
 }
+
+.attributes {
+    width: 100%;
+    font-size: 0.8rem;
+
+    li {
+        list-style: none;
+    }
+
+    select {
+        width: 100%;
+    }
+}

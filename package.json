@@ -9,16 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.5.1",
     "@twa-dev/sdk": "^8.0.1",
     "@woocommerce/woocommerce-rest-api": "^1.0.1",
+    "lodash.debounce": "^4.0.8",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
-    "react-medium-image-zoom": "^5.2.13"
+    "react-medium-image-zoom": "^5.2.13",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

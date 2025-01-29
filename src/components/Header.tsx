@@ -3,15 +3,15 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { FaFilter } from "react-icons/fa";
 import { RxDividerVertical } from "react-icons/rx";
-import WebApp from "@twa-dev/sdk";
+// import WebApp from "@twa-dev/sdk";
 import styles from "./header.module.scss";
 
 function Header() {
-    useEffect(() => {
-        if (WebApp.isActive) {
-            WebApp.expand();
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (WebApp.isActive) {
+    //         WebApp.expand();
+    //     }
+    // }, []);
 
     return (
         <header className={styles.header}>

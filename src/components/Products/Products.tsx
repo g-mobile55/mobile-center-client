@@ -1,17 +1,29 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import styles from "./productCard.module.scss";
-import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
+import { wooAPI } from "@/lib/helpers/wooAPI";
 
-const api = new WooCommerceRestApi({
-    url: "http://mobile-center.gg",
-    consumerKey: process.env.WOO_CONSUMER_KEY!,
-    consumerSecret: process.env.WOO_CONSUMER_SECRET!,
-    version: "wc/v3",
-});
+async function Products({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    const sParams = await searchParams;
+    const params = new URLSearchParams(sParams);
+    params.append("attribute", "color");
+    params.append("attribute", "material");
 
-async function Products() {
-    const response = await api.get("products");
+    const response = await wooAPI.get("products", {
+        // brand: 19,
+        // category: "20,22",
+        // attribute: "pa_color", // Specify the material attribute
+        // attribute_term: `27, 30, 31, 32`,
+        // attribute_term: "pa_black",
+    });
+    // const response = await wooAPI.get("products", sParams);
+
+    console.log(response.data[1]?.attributes);
+    console.log(params.toString());
 
     return (
         <div className={styles["card-container"]}>

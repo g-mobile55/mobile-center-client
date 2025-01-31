@@ -10,12 +10,10 @@ export const alertSlice = createSlice({
     reducers: {
         showAlert: (state) => {
             state.alertClassName = "";
-            console.log("Show alert");
         },
 
         closeAlert: (state) => {
             state.alertClassName = "close";
-            console.log("Close alert");
         },
     },
 });

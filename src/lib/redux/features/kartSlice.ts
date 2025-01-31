@@ -70,9 +70,19 @@ export const kartSlice = createSlice({
         },
         openKart: (state) => {
             state.kartOpenState = "open";
+
+            const body = document.querySelector("body");
+            const html = document.querySelector("html");
+            html?.classList.add("fixed");
+            body?.classList.add("fixed");
         },
         closeKart: (state) => {
             state.kartOpenState = "close";
+
+            const body = document.querySelector("body");
+            const html = document.querySelector("html");
+            html?.classList.remove("fixed");
+            body?.classList.remove("fixed");
         },
     },
 });

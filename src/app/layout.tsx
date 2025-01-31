@@ -1,6 +1,6 @@
 "use client";
 import type { Metadata } from "next";
-import Header from "@/components/Header";
+import Header from "@/components/Hearder/Header";
 import Footer from "@/components/Footer";
 import Kart from "@/components/Kart/Kart";
 import Alert from "@/components/Alert/Alert";

@@ -2,11 +2,15 @@
 import styles from "./page.module.scss";
 import Products from "@/components/Products/Products";
 
-export default function Home() {
+export default function Home({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
     return (
         <div className={styles.page}>
             <main>
-                <Products />
+                <Products searchParams={searchParams} />
             </main>
 
             {/*                

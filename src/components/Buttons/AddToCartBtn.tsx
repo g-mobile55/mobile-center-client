@@ -1,5 +1,4 @@
 import styles from "./buttons.module.scss";
-import { MouseEvent } from "react";
 
 function AddToCartBtn({
     handleClick,

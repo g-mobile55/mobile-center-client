@@ -50,6 +50,7 @@ function ProductDetailsForm({ product }: { product: any }) {
         debouncedAlert();
     };
 
+    console.log(product.categories.name);
     return (
         <>
             <form onSubmit={handleSubmit} className={styles.form}>
@@ -65,13 +66,13 @@ function ProductDetailsForm({ product }: { product: any }) {
                     value={product.brands[0].name}
                     readOnly
                 />
-                <p>{product.price}&#8381;</p>
+                <p className={styles.price}>{product.price}&#8381;</p>
                 <p>{product.categories.name}</p>
                 <ul>
                     {product.attributes.map((attribute: any, index: number) => {
                         return (
                             <li key={index} className={styles.attribute}>
-                                {attribute.name}:
+                                <span className={styles.title}>{attribute.name}:</span>
                                 {attribute.options.length > 1 ? (
                                     <select
                                         name={attribute.name}
@@ -91,8 +92,18 @@ function ProductDetailsForm({ product }: { product: any }) {
                         );
                     })}
                 </ul>
-                <p>Category: {product.categories.map((category: any) => category.name)}</p>
-                <p>Brand: {product.brands.map((brand: any) => brand.name)}</p>
+                <p>
+                    <span className={styles.title}>Category</span>:{" "}
+                    {product.categories.map((category: any) => {
+                        return <span key={category.name}>{category.name}, </span>;
+                    })}
+                </p>
+                <p>
+                    <span className={styles.title}>Brand</span>:{" "}
+                    {product.brands.map((brand: any) => {
+                        return <span key={brand.name}>{brand.name}, </span>;
+                    })}
+                </p>
                 <AddToCartBtn btnType="submit" />
             </form>
         </>

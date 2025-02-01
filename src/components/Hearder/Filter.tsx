@@ -1,21 +1,29 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent, MouseEvent } from "react";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useRouter } from "next/navigation";
 import styles from "./header.module.scss";
 
-function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
-    const [url, setUrl] = useState();
+type SearchStateT = {
+    brands: string[];
+    categories: string[];
+    attributes: { [key: string]: string[] };
+};
 
-    const [searchState, setSearchState] = useState<{ [key: string]: Set<unknown> | any }>({
+function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
+    const router = useRouter();
+    const [searchState, setSearchState] = useState<SearchStateT>({
         brands: [],
         categories: [],
         attributes: {},
     });
 
-    const searchParams = new URLSearchParams();
-    searchParams.delete();
-
-    console.log(searchState);
+    URLSearchParams.prototype.remove = function (key, value) {
+        const entries = this.getAll(key);
+        const newEntries = entries.filter((entry) => entry !== value);
+        this.delete(key);
+        newEntries.forEach((newEntry) => this.append(key, newEntry));
+    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchState((state) => {
@@ -43,7 +51,6 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                         },
                     };
                 }
-                //
             } else {
                 const isChecked = e.target.checked;
                 if (isChecked) {
@@ -90,6 +97,38 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
             })
             .catch((error) => console.log(error));
     }, []);
+
+    const handleApply = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const searchParams = new URLSearchParams();
+        e.preventDefault();
+
+        if (searchState.brands.length)
+            searchParams.append(
+                "brand",
+                searchState.brands.map((brand: string) => brand.split(",")[1]).join(",")
+            );
+
+        if (searchState.categories.length)
+            searchParams.append(
+                "category",
+                searchState.categories.map((category: string) => category.split(",")[1]).join(",")
+            );
+
+        for (const key in searchState.attributes) {
+            console.log(key);
+            if (searchState.attributes[key].length) {
+                searchParams.append("attribute", key);
+                searchParams.append(
+                    "attribute_term",
+                    searchState.attributes[key].map((term: string) => term.split(",")[1]).join(",")
+                );
+            }
+        }
+
+        router.push(`/?${searchParams.toString()}`);
+        console.log(searchState.attributes);
+        console.log(searchParams.toString());
+    };
 
     return (
         <div className={`${styles["filter-wrapper"]} ${styles[isFilterOpen]}`}>
@@ -154,7 +193,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                         attributes.map((attribute) => {
                             return (
                                 <ul key={attribute.parrentAttribute}>
-                                    <h5>{attribute.parrentAttribute}</h5>
+                                    <h5>{attribute.parrentAttributeName}</h5>
                                     {attribute.terms.map((term) => {
                                         return (
                                             <li key={`${term.id} ${term.name}`}>
@@ -181,6 +220,11 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                     )}
                 </div>
             </form>
+            <div className={styles["button-container"]}>
+                <button type="button" className={styles.button} onClick={handleApply}>
+                    Apply
+                </button>
+            </div>
         </div>
     );
 }

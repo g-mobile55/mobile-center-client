@@ -15,11 +15,13 @@ export async function GET() {
         );
 
         const attributesTerms = attributes.map((attribute: any, index: number) => {
-            return { parrentAttribute: attribute.slug, terms: terms[index].data };
+            return {
+                parrentAttribute: attribute.slug,
+                parrentAttributeName: attribute.name,
+                terms: terms[index].data,
+            };
         });
 
-        console.log(attributesTerms);
-        console.log(attributes);
         return Response.json({ brands, categories, attributesTerms });
     } catch (error) {
         console.log(error);

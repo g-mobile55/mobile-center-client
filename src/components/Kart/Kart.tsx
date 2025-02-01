@@ -1,4 +1,5 @@
 "use client";
+import { MouseEvent, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     closeKart,
@@ -9,7 +10,9 @@ import {
 import type { RootState } from "../../lib/redux/store";
 import { IoIosArrowDropdown } from "react-icons/io";
 import { GoTrash } from "react-icons/go";
+import WebApp from "@twa-dev/sdk";
 import Image from "next/image";
+import { axiosAPI } from "@/lib/helpers/axiosAPI";
 
 import styles from "./kart.module.scss";
 
@@ -17,10 +20,17 @@ function Kart() {
     const kart = useSelector((state: RootState) => state.kart);
     const dispatch = useDispatch();
 
-    const handleAdd = () => {};
+    const handleSubmit = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        // WebApp.sendData("SSSSSSSSSS");
+        const query = new URLSearchParams(WebApp.initData);
 
-    const handleSubtract = () => {
-        //
+        const user = JSON.parse(query.get("user")!);
+
+        axiosAPI.post("webapp", {
+            user,
+            kart: kart.products,
+        });
+        console.log("initDAta", user);
     };
 
     return (
@@ -135,7 +145,9 @@ function Kart() {
                                 &#8381;
                             </span>
                         </div>
-                        <button className={styles.submit}>Submit</button>
+                        <button className={styles.submit} onClick={handleSubmit}>
+                            Submit
+                        </button>
                     </div>
                 </div>
             ) : (

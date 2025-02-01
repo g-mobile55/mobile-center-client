@@ -1,7 +1,7 @@
 import { wooAPI } from "@/lib/helpers/wooAPI";
 import DetailsGallery from "@/components/ProductDetails/DetailsGallery";
 import styles from "./page.module.scss";
-import ProductDetailsForm from "@/components/Form/ProductDetailsForm";
+import ProductDetailsForm from "@/components/ProductDetails/ProductDetailsForm";
 
 import type { ImagesT } from "@/lib/types/woo.types";
 

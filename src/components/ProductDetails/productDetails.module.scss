@@ -1,0 +1,21 @@
+.form {
+    // background: #000;
+    select {
+        display: inline-block;
+    }
+}
+
+.attribute {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.price {
+    font-weight: bold;
+}
+
+.title {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.9rem;
+}

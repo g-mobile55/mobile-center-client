@@ -5,10 +5,12 @@
     column-gap: 2rem;
     row-gap: 1.5rem;
     margin-top: 2rem;
+    // padding-left: 1rem;
 }
 
 .card {
     // border: solid gold 1px;
+    padding: 0 0.3rem;
     border-radius: 3px;
     width: 11rem;
     aspect-ratio: 0.5;

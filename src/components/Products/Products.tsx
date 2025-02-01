@@ -9,21 +9,19 @@ async function Products({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const sParams = await searchParams;
-    const params = new URLSearchParams(sParams);
-    params.append("attribute", "color");
-    params.append("attribute", "material");
+    // @ts-expect-error
+    const searchParamsO = new URLSearchParams(sParams);
 
-    const response = await wooAPI.get("products", {
-        // brand: 19,
-        // category: "20,22",
-        // attribute: "pa_color", // Specify the material attribute
-        // attribute_term: `27, 30, 31, 32`,
-        // attribute_term: "pa_black",
-    });
-    // const response = await wooAPI.get("products", sParams);
+    const url = Object.keys(sParams).length ? `products/?${searchParamsO.toString()}` : "products";
 
-    console.log(response.data[1]?.attributes);
-    console.log(params.toString());
+    // const response = await wooAPI.get("products", {
+    // brand: 19,
+    // category: "20,22",
+    // attribute: "pa_color", // Specify the material attribute
+    // attribute_term: `27, 30, 31, 32`,
+    // attribute_term: "pa_black",
+    // });
+    const response = await wooAPI.get(url);
 
     return (
         <div className={styles["card-container"]}>

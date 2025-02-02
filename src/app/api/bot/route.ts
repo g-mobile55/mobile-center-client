@@ -44,8 +44,4 @@ bot.command("keyboard", async (ctx) => {
     }
 });
 
-bot.api.setWebhook(`${webAppURI}/api/bot`, {
-    drop_pending_updates: true,
-});
-
 export const POST = webhookCallback(bot, "std/http");

@@ -1,11 +1,16 @@
 "use client";
 import type { Metadata } from "next";
-import Header from "@/components/Hearder/Header";
-import Footer from "@/components/Footer";
+// import Header from "@/components/Hearder/Header";
+// import Footer from "@/components/Footer";
 import Kart from "@/components/Kart/Kart";
 import Alert from "@/components/Alert/Alert";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
+import dynamic from "next/dynamic";
+
+const DynamicHeader = dynamic(() => import("../components/Hearder/Header"), { ssr: false });
+const DynamicFooter = dynamic(() => import("../components/Footer"), { ssr: false });
+const DynamicKart = dynamic(() => import("../components/Kart/Kart"), { ssr: false });
 
 import { Poppins } from "next/font/google";
 
@@ -27,12 +32,12 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${poppins.className} mainPage fixed`}>
-                <Header />
+                <DynamicHeader />
                 <Provider store={store}>
                     <Alert />
                     {children}
-                    <Kart />
-                    <Footer />
+                    <DynamicKart />
+                    <DynamicFooter />
                 </Provider>
             </body>
         </html>

@@ -21,7 +21,6 @@ function Kart() {
     const dispatch = useDispatch();
 
     const handleSubmit = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        // WebApp.sendData("SSSSSSSSSS");
         const query = new URLSearchParams(WebApp.initData);
 
         const user = JSON.parse(query.get("user")!);
@@ -30,7 +29,6 @@ function Kart() {
             user,
             kart: kart.products,
         });
-        console.log("initDAta", user);
     };
 
     return (

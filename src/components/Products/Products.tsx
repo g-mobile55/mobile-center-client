@@ -30,9 +30,10 @@ async function Products({
                     key={product.id}
                     image={product.images[0].src}
                     brands={
-                        product.attributes.filter(
-                            (attribute: any) => attribute.name === "Phone Brand"
-                        )[0]?.options
+                        // product.attributes.filter(
+                        //     (attribute: any) => attribute.name === "Phone Brand"
+                        // )[0]?.options
+                        product.brands
                     }
                     name={product.name}
                     price={product.price}

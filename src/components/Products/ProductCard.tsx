@@ -13,6 +13,7 @@ import styles from "./productCard.module.scss";
 function ProductCard(product: ProductT) {
     const { name, id, image, attributes, brands, categories, price, quantity } = product;
     const dispatch = useDispatch();
+
     const [state, setState] = useState({
         ...product,
         attributes: attributes.map((attribute: any) => {
@@ -27,7 +28,7 @@ function ProductCard(product: ProductT) {
                 ...state,
                 attributes: state.attributes.map((attribute: any) => {
                     if (attribute.name === e.target.name) {
-                        return { ...attribute, options: [e.target.value] };
+                        return { ...attribute, options: e.target.value };
                     }
                     return attribute;
                 }),

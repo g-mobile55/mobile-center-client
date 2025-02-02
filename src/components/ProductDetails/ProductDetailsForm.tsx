@@ -25,7 +25,7 @@ function ProductDetailsForm({ product }: { product: any }) {
                 ...state,
                 attributes: state.attributes.map((attribute: any) => {
                     if (attribute.name === e.target.name) {
-                        return { ...attribute, options: [e.target.value] };
+                        return { ...attribute, options: e.target.value };
                     }
                     return attribute;
                 }),

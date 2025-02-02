@@ -60,13 +60,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
             const fileBuffer = await workbook.xlsx.writeBuffer();
             const date = new Date();
-            const month = date.getUTCMonth() + 1;
             const day = date.getUTCDate();
+            const month = date.getUTCMonth() + 1;
             const year = date.getUTCFullYear();
-            const pMonth = month.toString().padStart(2, "0");
-            const pDay = day.toString().padStart(2, "0");
 
-            const fileName = `invoice-${data.user.first_name}-${pDay}/${pMonth}/${year}.xlsx`;
+            const fileName = `invoice-${data.user.first_name}-${day}/${month}/${year}.xlsx`;
 
             await bot.api.sendMessage(data.user.id, "Your order is accepted.");
             // @ts-expect-error

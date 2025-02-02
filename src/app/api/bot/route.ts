@@ -8,17 +8,23 @@ if (!token) throw new Error("TELEGRAM_BOT_TOKEN environment variable not found."
 
 export const bot = new Bot(token);
 
+const webAppURI = process.env.WEB_APP_URI!;
+
 // Handle the /start command.
-bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 // Handle other messages.
 // bot.on("message", (ctx) => ctx.reply("Got another message!"));
 
-const webappBtn = new InlineKeyboard().webApp(
-    "Our web app",
-    "https://vsn5nrl9-3000.euw.devtunnels.ms/"
-);
+const webappBtn = new InlineKeyboard().webApp("Our web app", webAppURI);
 
-const keyboard = new Keyboard().webApp("BTN", "https://vsn5nrl9-3000.euw.devtunnels.ms/").resized();
+const keyboard = new Keyboard().webApp("BTN", webAppURI).resized();
+
+bot.command("start", async (ctx) => {
+    try {
+        await ctx.reply("WEB APP", { reply_markup: webappBtn });
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 bot.command("inline", async (ctx) => {
     try {
@@ -38,7 +44,7 @@ bot.command("keyboard", async (ctx) => {
     }
 });
 
-bot.api.setWebhook("https://vsn5nrl9-3000.euw.devtunnels.ms/api/bot", {
+bot.api.setWebhook(`${webAppURI}/api/bot`, {
     drop_pending_updates: true,
 });
 

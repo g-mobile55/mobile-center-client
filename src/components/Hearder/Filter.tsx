@@ -3,6 +3,7 @@ import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import LoadingCircle from "../Buttons/LoadingCircle";
 import { useRouter } from "next/navigation";
 import styles from "./header.module.scss";
+import Dropdown from "./Dropdown";
 
 type SearchStateT = {
     brands: string[];
@@ -34,6 +35,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
 
                 const isChecked = e.target.checked;
                 if (isChecked) {
+                    console.log(state);
                     newState = {
                         ...state,
                         attributes: {
@@ -90,7 +92,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                 // when checkbox for some attribute is checked
                 const attributesOBJ = {};
                 response.data.attributesTerms.forEach((term) => {
-                    attributesOBJ[term.parrentAttribute] = [];
+                    attributesOBJ[term.parentAttribute] = [];
                 });
                 setSearchState((state) => {
                     return { ...state, attributes: attributesOBJ };
@@ -136,68 +138,44 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
             <form className={styles["filter-inner"]}>
                 <div>
                     <h4>Brands</h4>
-                    <ul>
-                        {brands.length ? (
-                            brands.map((brand: any) => {
-                                return (
-                                    <li key={`${brand.name} ${brand.id}`}>
-                                        <label htmlFor={brand.name}>
-                                            <input
-                                                type="checkbox"
-                                                name={"brands"}
-                                                value={`${brand.name},${brand.id}`}
-                                                id={brand.name}
-                                                onChange={handleChange}
-                                            />
-                                            {brand.name}
-                                        </label>
-                                    </li>
-                                );
-                            })
-                        ) : (
-                            <LoadingCircle />
-                        )}
-                    </ul>
+                    {brands.length ? (
+                        <Dropdown data={brands} handleChange={handleChange} forProperty="brands" />
+                    ) : (
+                        <LoadingCircle />
+                    )}
                 </div>
                 <div>
                     <h4>Categories</h4>
-                    <ul>
-                        {categories.length ? (
-                            categories.map((category: any) => {
-                                return (
-                                    <li key={`${category.name} ${category.id}`}>
-                                        <label htmlFor={category.name}>
-                                            <input
-                                                type="checkbox"
-                                                name={"categories"}
-                                                value={`${category.name},${category.id}`}
-                                                id={category.name}
-                                                onChange={handleChange}
-                                            />
-                                            {category.name}
-                                        </label>
-                                    </li>
-                                );
-                            })
-                        ) : (
-                            <LoadingCircle />
-                        )}
-                    </ul>
+                    {categories.length ? (
+                        <Dropdown
+                            data={categories}
+                            handleChange={handleChange}
+                            forProperty="categories"
+                        />
+                    ) : (
+                        <LoadingCircle />
+                    )}
                 </div>
                 <div>
                     <h4>Attributes</h4>
                     {attributes.length ? (
                         attributes.map((attribute) => {
                             return (
-                                <ul key={attribute.parrentAttribute}>
-                                    <h5>{attribute.parrentAttributeName}</h5>
+                                // <Dropdown
+                                //     data={attribute}
+                                //     handleChange={handleChange}
+                                //     forProperty="attributes"
+                                //     key={attribute.parentAttribute}
+                                // />
+                                <ul key={attribute.parentAttribute}>
+                                    <h5>{attribute.parentAttributeName}</h5>
                                     {attribute.terms.map((term) => {
                                         return (
                                             <li key={`${term.id} ${term.name}`}>
                                                 <label htmlFor={term.name}>
                                                     <input
                                                         type="checkbox"
-                                                        name={`attributes-${attribute.parrentAttribute}`}
+                                                        name={`attributes-${attribute.parentAttribute}`}
                                                         value={`${term.name},${term.id}`}
                                                         id={term.name}
                                                         onChange={handleChange}

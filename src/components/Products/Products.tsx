@@ -9,6 +9,7 @@ async function Products({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const sParams = await searchParams;
+    console.log(sParams);
     // @ts-expect-error
     const searchParamsO = new URLSearchParams(sParams);
 

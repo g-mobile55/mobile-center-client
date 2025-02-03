@@ -88,6 +88,12 @@
         font-size: 0.8rem;
         cursor: pointer;
     }
+
+    label {
+        display: flex;
+        column-gap: 0.3rem;
+        width: max-content;
+    }
 }
 
 .button-container {

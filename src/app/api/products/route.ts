@@ -16,8 +16,8 @@ export async function GET() {
 
         const attributesTerms = attributes.map((attribute: any, index: number) => {
             return {
-                parrentAttribute: attribute.slug,
-                parrentAttributeName: attribute.name,
+                parentAttribute: attribute.slug,
+                parentAttributeName: attribute.name,
                 terms: terms[index].data,
             };
         });

@@ -84,11 +84,14 @@ export const kartSlice = createSlice({
             html?.classList.remove("fixed");
             body?.classList.remove("fixed");
         },
+        resetKart: (state) => {
+            state.products = [];
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToKart, removeFromKart, openKart, closeKart, decreaseQuantity } =
+export const { addToKart, removeFromKart, openKart, closeKart, decreaseQuantity, resetKart } =
     kartSlice.actions;
 
 export default kartSlice.reducer;

@@ -1,11 +1,12 @@
 "use client";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     closeKart,
     addToKart,
     decreaseQuantity,
     removeFromKart,
+    resetKart,
 } from "@/lib/redux/features/kartSlice";
 import type { RootState } from "../../lib/redux/store";
 import { IoIosArrowDropdown } from "react-icons/io";
@@ -13,22 +14,32 @@ import { GoTrash } from "react-icons/go";
 import WebApp from "@twa-dev/sdk";
 import Image from "next/image";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
+import LoadingCircle from "../Buttons/LoadingCircle";
 
 import styles from "./kart.module.scss";
 
 function Kart() {
     const kart = useSelector((state: RootState) => state.kart);
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleSubmit = async (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
         const query = new URLSearchParams(WebApp.initData);
 
         const user = JSON.parse(query.get("user")!);
 
-        axiosAPI.post("webapp", {
+        setIsLoading(true);
+
+        const response = await axiosAPI.post("webapp", {
             user,
             kart: kart.products,
         });
+
+        if (response.status == 200) {
+            dispatch(resetKart());
+            dispatch(closeKart());
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -143,8 +154,12 @@ function Kart() {
                                 &#8381;
                             </span>
                         </div>
-                        <button className={styles.submit} onClick={handleSubmit}>
-                            Submit
+                        <button
+                            className={styles.submit}
+                            onClick={handleSubmit}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <LoadingCircle /> : "SUBMIT ORDER"}
                         </button>
                     </div>
                 </div>

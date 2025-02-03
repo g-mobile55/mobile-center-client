@@ -8,7 +8,9 @@ if (!token) throw new Error("TELEGRAM_BOT_TOKEN environment variable not found."
 
 export const bot = new Bot(token);
 
-const webAppURI = process.env.WEB_APP_URI!;
+const webAppURI = process.env.WEB_APP_URI;
+
+if (!webAppURI) throw new Error("Provide web app uri");
 
 // Handle the /start command.
 // Handle other messages.
@@ -24,6 +26,12 @@ bot.command("start", async (ctx) => {
     } catch (error) {
         console.log(error);
     }
+});
+
+bot.command("user", async (ctx) => {
+    const chat = await ctx.getChat();
+    const { has_private_forwards } = chat;
+    console.log(has_private_forwards);
 });
 
 bot.command("inline", async (ctx) => {
@@ -42,6 +50,10 @@ bot.command("keyboard", async (ctx) => {
     } catch (error) {
         console.log(error);
     }
+});
+
+bot.api.setWebhook(`${webAppURI}/api/bot`, {
+    drop_pending_updates: true,
 });
 
 export const POST = webhookCallback(bot, "std/http");

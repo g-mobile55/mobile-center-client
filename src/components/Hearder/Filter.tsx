@@ -1,6 +1,6 @@
-import { useEffect, useState, ChangeEvent, MouseEvent } from "react";
+import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "react";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import LoadingCircle from "../Buttons/LoadingCircle";
 import { useRouter } from "next/navigation";
 import styles from "./header.module.scss";
 
@@ -12,18 +12,19 @@ type SearchStateT = {
 
 function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
     const [searchState, setSearchState] = useState<SearchStateT>({
         brands: [],
         categories: [],
         attributes: {},
     });
 
-    URLSearchParams.prototype.remove = function (key, value) {
-        const entries = this.getAll(key);
-        const newEntries = entries.filter((entry) => entry !== value);
-        this.delete(key);
-        newEntries.forEach((newEntry) => this.append(key, newEntry));
-    };
+    // URLSearchParams.prototype.remove = function (key, value) {
+    //     const entries = this.getAll(key);
+    //     const newEntries = entries.filter((entry) => entry !== value);
+    //     this.delete(key);
+    //     newEntries.forEach((newEntry) => this.append(key, newEntry));
+    // };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchState((state) => {
@@ -125,9 +126,9 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
             }
         }
 
-        router.push(`/?${searchParams.toString()}`);
-        console.log(searchState.attributes);
-        console.log(searchParams.toString());
+        startTransition(() => {
+            router.push(`/?${searchParams.toString()}`);
+        });
     };
 
     return (
@@ -154,9 +155,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                                 );
                             })
                         ) : (
-                            <div className={styles.loading}>
-                                <AiOutlineLoading3Quarters />
-                            </div>
+                            <LoadingCircle />
                         )}
                     </ul>
                 </div>
@@ -181,9 +180,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                                 );
                             })
                         ) : (
-                            <div className={styles.loading}>
-                                <AiOutlineLoading3Quarters />
-                            </div>
+                            <LoadingCircle />
                         )}
                     </ul>
                 </div>
@@ -214,15 +211,18 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                             );
                         })
                     ) : (
-                        <div className={styles.loading}>
-                            <AiOutlineLoading3Quarters />
-                        </div>
+                        <LoadingCircle />
                     )}
                 </div>
             </form>
             <div className={styles["button-container"]}>
-                <button type="button" className={styles.button} onClick={handleApply}>
-                    Apply
+                <button
+                    type="button"
+                    className={styles.button}
+                    onClick={handleApply}
+                    disabled={isPending}
+                >
+                    {isPending ? <LoadingCircle /> : "Apply"}
                 </button>
             </div>
         </div>

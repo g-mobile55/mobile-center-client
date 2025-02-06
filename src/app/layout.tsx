@@ -1,9 +1,8 @@
 "use client";
 import type { Metadata } from "next";
 import Header from "@/components/Hearder/Header";
-// import Footer from "@/components/Footer";
-import Kart from "@/components/Kart/Kart";
 import Alert from "@/components/Alert/Alert";
+import Pagination from "@/components/Pagination/Pagination";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
 import dynamic from "next/dynamic";
@@ -35,6 +34,7 @@ export default function RootLayout({
                     <Header />
                     <Alert />
                     {children}
+                    <Pagination />
                     <DynamicKart />
                     <DynamicFooter />
                 </Provider>

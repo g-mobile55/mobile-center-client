@@ -3,10 +3,16 @@
 import kartReducer from "./features/kartSlice";
 import alertReducer from "./features/alertSlice";
 import filterReducer from "./features/filterSlice";
+import searchParamsReducer from "./features/searchParamsSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
-    reducer: { kart: kartReducer, alert: alertReducer, filter: filterReducer },
+    reducer: {
+        kart: kartReducer,
+        alert: alertReducer,
+        filter: filterReducer,
+        searchParams: searchParamsReducer,
+    },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

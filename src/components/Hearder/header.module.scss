@@ -159,3 +159,52 @@
 .button:not(:disabled):active {
     transform: translateY(0.125rem);
 }
+
+.dropdown-container {
+    position: relative;
+
+    .title-button {
+        background-color: unset;
+        border: none;
+        color: white;
+        cursor: pointer;
+
+        display: flex;
+        justify-content: center;
+
+        .arrow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 1rem;
+            height: 1rem;
+            transition: rotate 200ms linear;
+
+            rotate: 180deg;
+        }
+
+        .arrow-container.close {
+            rotate: 0deg;
+        }
+    }
+
+    .dropdown-list {
+        transform-origin: top;
+        transition: transform 300ms;
+    }
+
+    .dropdown-list.close {
+        transform: scale(1, 0);
+    }
+}
+
+.information {
+    width: 100%;
+    grid-column-start: 1;
+    grid-column-end: 4;
+
+    p {
+        text-align: center;
+        font-weight: bold;
+    }
+}

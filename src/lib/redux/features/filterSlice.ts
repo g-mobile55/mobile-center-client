@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { current } from "@reduxjs/toolkit";
-import { type ProductT } from "@/lib/types/woo.types";
 
 export type FilterStateT = {
     brands: string[];

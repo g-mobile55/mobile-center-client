@@ -13,8 +13,8 @@ async function Products({
         category: string | undefined;
         attribute: string | string[] | undefined;
         attribute_term: string | string[] | undefined;
+        page: string | undefined;
     };
-    console.log(sParams);
 
     const urlSearchParams = new URLSearchParams();
 
@@ -34,13 +34,18 @@ async function Products({
         }
     }
 
+    if (sParams.page) {
+        urlSearchParams.append("page", sParams.page);
+    }
+
     urlSearchParams.append("per_page", "2");
 
     console.log(urlSearchParams.toString());
 
-    const url = Object.keys(sParams).length
-        ? `products/?${urlSearchParams.toString()}`
-        : "products/?per_page=2";
+    // const url = Object.keys(sParams).length
+    //     ? `products/?${urlSearchParams.toString()}`
+    //     : "products";
+    const url = `products/?${urlSearchParams.toString()}`;
 
     // console.log(url);
     // const response = await wooAPI.get("products", {
@@ -50,6 +55,8 @@ async function Products({
     //     attribute_term: "25",
     // });
     const response = await wooAPI.get(url);
+
+    // console.log(response.data);
 
     return (
         <div className={styles["card-container"]}>

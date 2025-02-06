@@ -4,83 +4,19 @@ import LoadingCircle from "../Buttons/LoadingCircle";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilter, populateFilter } from "@/lib/redux/features/filterSlice";
+import { setSearchParams } from "@/lib/redux/features/searchParamsSlice";
 import { RootState } from "@/lib/redux/store";
 import styles from "./header.module.scss";
 import Dropdown from "./Dropdown";
 
-type FilterStateT = {
-    brands: string[];
-    categories: string[];
-    attributes: { [key: string]: string[] };
-};
-
 function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [filterState, setFilterState] = useState<FilterStateT>({
-        brands: [],
-        categories: [],
-        attributes: {},
-    });
-    const dispatch = useDispatch();
-    const reduxState = useSelector((state: RootState) => state.filter);
 
-    // URLSearchParams.prototype.remove = function (key, value) {
-    //     const entries = this.getAll(key);
-    //     const newEntries = entries.filter((entry) => entry !== value);
-    //     this.delete(key);
-    //     newEntries.forEach((newEntry) => this.append(key, newEntry));
-    // };
+    const dispatch = useDispatch();
+    const filterState = useSelector((state: RootState) => state.filter);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log(reduxState);
-        console.log(filterState);
-
-        setFilterState((state) => {
-            let newState;
-            if (e.target.name.split("-")[0] === "attributes") {
-                const attribute = e.target.name.split("-")[1];
-
-                const isChecked = e.target.checked;
-                if (isChecked) {
-                    newState = {
-                        ...state,
-                        attributes: {
-                            ...state.attributes,
-                            [attribute]: [...state.attributes[attribute], e.target.value],
-                        },
-                    };
-                } else {
-                    newState = {
-                        ...state,
-                        attributes: {
-                            ...state.attributes,
-                            [attribute]: state.attributes[attribute].filter(
-                                (item: any) => item !== e.target.value
-                            ),
-                        },
-                    };
-                }
-            } else {
-                const isChecked = e.target.checked;
-                if (isChecked) {
-                    newState = {
-                        ...state,
-                        [e.target.name]: [...state[e.target.name], e.target.value],
-                    };
-                } else {
-                    newState = {
-                        ...state,
-                        [e.target.name]: state[e.target.name].filter(
-                            (item: any) => item !== e.target.value
-                        ),
-                    };
-                }
-            }
-
-            return newState;
-        });
-        // useRedux ------
         const payload = {
             name: e.target.name,
             value: e.target.value,
@@ -94,6 +30,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const [attributes, setAttributes] = useState([]);
 
     useEffect(() => {
+        console.log("effect");
         axiosAPI
             .get("products")
             .then((response) => {
@@ -109,10 +46,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                 response.data.attributesTerms.forEach((term: string) => {
                     attributesOBJ[term.parentAttribute] = [];
                 });
-                setFilterState((state) => {
-                    return { ...state, attributes: attributesOBJ };
-                });
-                // using redux -----
+
                 dispatch(populateFilter(attributesOBJ));
             })
             .catch((error) => console.log(error));
@@ -144,8 +78,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
             }
         }
 
-        console.log(filterState.attributes);
-        console.log(searchParams.toString());
+        dispatch(setSearchParams(searchParams.toString()));
         startTransition(() => {
             router.push(`/?${searchParams.toString()}`);
         });
@@ -155,17 +88,21 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
         <div className={`${styles["filter-wrapper"]} ${styles[isFilterOpen]}`}>
             <form className={styles["filter-inner"]}>
                 <div>
-                    <h4>Brands</h4>
                     {brands.length ? (
-                        <Dropdown data={brands} handleChange={handleChange} forProperty="brands" />
+                        <Dropdown
+                            title="Brands"
+                            data={brands}
+                            handleChange={handleChange}
+                            forProperty="brands"
+                        />
                     ) : (
                         <LoadingCircle />
                     )}
                 </div>
                 <div>
-                    <h4>Categories</h4>
                     {categories.length ? (
                         <Dropdown
+                            title="Categories"
                             data={categories}
                             handleChange={handleChange}
                             forProperty="categories"
@@ -175,7 +112,6 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                     )}
                 </div>
                 <div>
-                    <h4>Attributes</h4>
                     {attributes.length ? (
                         // Remove filter later to get full filter
                         // remove it when custom php endpoint for attributes will be ready.
@@ -184,35 +120,20 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                             .map((attribute) => {
                                 return (
                                     <Dropdown
+                                        title="Attributes"
                                         data={attribute}
                                         handleChange={handleChange}
                                         forProperty="attributes"
                                         key={attribute.parentAttribute}
                                     />
-                                    // <ul key={attribute.parentAttribute}>
-                                    //     <h5>{attribute.parentAttributeName}</h5>
-                                    //     {attribute.terms.map((term) => {
-                                    //         return (
-                                    //             <li key={`${term.id} ${term.name}`}>
-                                    //                 <label htmlFor={term.name}>
-                                    //                     <input
-                                    //                         type="checkbox"
-                                    //                         name={`attributes-${attribute.parentAttribute}`}
-                                    //                         value={`${term.name},${term.id}`}
-                                    //                         id={term.name}
-                                    //                         onChange={handleChange}
-                                    //                     />
-                                    //                     {term.name}
-                                    //                 </label>
-                                    //             </li>
-                                    //         );
-                                    //     })}
-                                    // </ul>
                                 );
                             })
                     ) : (
                         <LoadingCircle />
                     )}
+                </div>
+                <div className={styles.information}>
+                    <p>More filter options are coming soon.</p>
                 </div>
             </form>
             <div className={styles["button-container"]}>

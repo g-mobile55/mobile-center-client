@@ -2,10 +2,13 @@ import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "rea
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import LoadingCircle from "../Buttons/LoadingCircle";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter, populateFilter } from "@/lib/redux/features/filterSlice";
+import { RootState } from "@/lib/redux/store";
 import styles from "./header.module.scss";
 import Dropdown from "./Dropdown";
 
-type SearchStateT = {
+type FilterStateT = {
     brands: string[];
     categories: string[];
     attributes: { [key: string]: string[] };
@@ -14,11 +17,13 @@ type SearchStateT = {
 function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [searchState, setSearchState] = useState<SearchStateT>({
+    const [filterState, setFilterState] = useState<FilterStateT>({
         brands: [],
         categories: [],
         attributes: {},
     });
+    const dispatch = useDispatch();
+    const reduxState = useSelector((state: RootState) => state.filter);
 
     // URLSearchParams.prototype.remove = function (key, value) {
     //     const entries = this.getAll(key);
@@ -28,14 +33,16 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     // };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearchState((state) => {
+        console.log(reduxState);
+        console.log(filterState);
+
+        setFilterState((state) => {
             let newState;
             if (e.target.name.split("-")[0] === "attributes") {
                 const attribute = e.target.name.split("-")[1];
 
                 const isChecked = e.target.checked;
                 if (isChecked) {
-                    console.log(state);
                     newState = {
                         ...state,
                         attributes: {
@@ -73,6 +80,13 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
 
             return newState;
         });
+        // useRedux ------
+        const payload = {
+            name: e.target.name,
+            value: e.target.value,
+            checked: e.target.checked,
+        };
+        dispatch(setFilter(payload));
     };
 
     const [brands, setBrands] = useState([]);
@@ -87,16 +101,19 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                 setCategories(response.data.categories);
                 setAttributes(response.data.attributesTerms);
 
-                // populate searchState attributes with empty arrays
+                // populate filterState attributes with empty arrays
                 // so we will not get error while trying to set state
                 // when checkbox for some attribute is checked
-                const attributesOBJ = {};
-                response.data.attributesTerms.forEach((term) => {
+                const attributesOBJ: { [key: string]: [] } = {};
+
+                response.data.attributesTerms.forEach((term: string) => {
                     attributesOBJ[term.parentAttribute] = [];
                 });
-                setSearchState((state) => {
+                setFilterState((state) => {
                     return { ...state, attributes: attributesOBJ };
                 });
+                // using redux -----
+                dispatch(populateFilter(attributesOBJ));
             })
             .catch((error) => console.log(error));
     }, []);
@@ -105,29 +122,30 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
         const searchParams = new URLSearchParams();
         e.preventDefault();
 
-        if (searchState.brands.length)
+        if (filterState.brands.length)
             searchParams.append(
                 "brand",
-                searchState.brands.map((brand: string) => brand.split(",")[1]).join(",")
+                filterState.brands.map((brand: string) => brand.split(",")[1]).join(",")
             );
 
-        if (searchState.categories.length)
+        if (filterState.categories.length)
             searchParams.append(
                 "category",
-                searchState.categories.map((category: string) => category.split(",")[1]).join(",")
+                filterState.categories.map((category: string) => category.split(",")[1]).join(",")
             );
 
-        for (const key in searchState.attributes) {
-            console.log(key);
-            if (searchState.attributes[key].length) {
+        for (const key in filterState.attributes) {
+            if (filterState.attributes[key].length) {
                 searchParams.append("attribute", key);
                 searchParams.append(
                     "attribute_term",
-                    searchState.attributes[key].map((term: string) => term.split(",")[1]).join(",")
+                    filterState.attributes[key].map((term: string) => term.split(",")[1]).join(",")
                 );
             }
         }
 
+        console.log(filterState.attributes);
+        console.log(searchParams.toString());
         startTransition(() => {
             router.push(`/?${searchParams.toString()}`);
         });
@@ -159,35 +177,39 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                 <div>
                     <h4>Attributes</h4>
                     {attributes.length ? (
-                        attributes.map((attribute) => {
-                            return (
-                                // <Dropdown
-                                //     data={attribute}
-                                //     handleChange={handleChange}
-                                //     forProperty="attributes"
-                                //     key={attribute.parentAttribute}
-                                // />
-                                <ul key={attribute.parentAttribute}>
-                                    <h5>{attribute.parentAttributeName}</h5>
-                                    {attribute.terms.map((term) => {
-                                        return (
-                                            <li key={`${term.id} ${term.name}`}>
-                                                <label htmlFor={term.name}>
-                                                    <input
-                                                        type="checkbox"
-                                                        name={`attributes-${attribute.parentAttribute}`}
-                                                        value={`${term.name},${term.id}`}
-                                                        id={term.name}
-                                                        onChange={handleChange}
-                                                    />
-                                                    {term.name}
-                                                </label>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            );
-                        })
+                        // Remove filter later to get full filter
+                        // remove it when custom php endpoint for attributes will be ready.
+                        attributes
+                            .filter((item) => item.parentAttribute === "pa_phone_brand")
+                            .map((attribute) => {
+                                return (
+                                    <Dropdown
+                                        data={attribute}
+                                        handleChange={handleChange}
+                                        forProperty="attributes"
+                                        key={attribute.parentAttribute}
+                                    />
+                                    // <ul key={attribute.parentAttribute}>
+                                    //     <h5>{attribute.parentAttributeName}</h5>
+                                    //     {attribute.terms.map((term) => {
+                                    //         return (
+                                    //             <li key={`${term.id} ${term.name}`}>
+                                    //                 <label htmlFor={term.name}>
+                                    //                     <input
+                                    //                         type="checkbox"
+                                    //                         name={`attributes-${attribute.parentAttribute}`}
+                                    //                         value={`${term.name},${term.id}`}
+                                    //                         id={term.name}
+                                    //                         onChange={handleChange}
+                                    //                     />
+                                    //                     {term.name}
+                                    //                 </label>
+                                    //             </li>
+                                    //         );
+                                    //     })}
+                                    // </ul>
+                                );
+                            })
                     ) : (
                         <LoadingCircle />
                     )}

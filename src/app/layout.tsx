@@ -31,8 +31,8 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${poppins.className} mainPage fixed`}>
-                <Header />
                 <Provider store={store}>
+                    <Header />
                     <Alert />
                     {children}
                     <DynamicKart />

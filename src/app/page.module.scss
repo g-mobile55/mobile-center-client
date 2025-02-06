@@ -15,6 +15,48 @@
     padding-bottom: 3.5rem;
 }
 
+.loading-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @-moz-keyframes loading {
+        100% {
+            -moz-transform: rotate(360deg);
+        }
+    }
+
+    @-webkit-keyframes loading {
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes loading {
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    .loading {
+        position: relative;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation-name: loading;
+        animation-duration: 700ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+
+        font-size: 2rem;
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     .page {
         --gray-rgb: 255, 255, 255;

@@ -8,19 +8,46 @@ async function Products({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const sParams = await searchParams;
+    const sParams = (await searchParams) as {
+        brand: string | undefined;
+        category: string | undefined;
+        attribute: string | string[] | undefined;
+        attribute_term: string | string[] | undefined;
+    };
     console.log(sParams);
-    // @ts-expect-error
-    const searchParamsO = new URLSearchParams(sParams);
 
-    const url = Object.keys(sParams).length ? `products/?${searchParamsO.toString()}` : "products";
+    const urlSearchParams = new URLSearchParams();
 
+    if (sParams.brand) urlSearchParams.append("brand", sParams.brand);
+
+    if (sParams.category) urlSearchParams.append("category", sParams.category);
+
+    if (sParams.attribute && sParams.attribute_term) {
+        if (typeof sParams.attribute === "string" && typeof sParams.attribute_term === "string") {
+            urlSearchParams.append("attribute", sParams.attribute);
+            urlSearchParams.append("attribute_term", sParams.attribute_term);
+        } else {
+            for (let i = 0; i < sParams.attribute.length; i++) {
+                urlSearchParams.append("attribute", sParams.attribute[i]);
+                urlSearchParams.append("attribute_term", sParams.attribute_term[i]);
+            }
+        }
+    }
+
+    urlSearchParams.append("per_page", "2");
+
+    console.log(urlSearchParams.toString());
+
+    const url = Object.keys(sParams).length
+        ? `products/?${urlSearchParams.toString()}`
+        : "products/?per_page=2";
+
+    // console.log(url);
     // const response = await wooAPI.get("products", {
-    // brand: 19,
-    // category: "20,22",
-    // attribute: "pa_color", // Specify the material attribute
-    // attribute_term: `27, 30, 31, 32`,
-    // attribute_term: "pa_black",
+    //     // brand: 19,
+    //     // category: "20,22",
+    //     attribute: "pa_color", // Specify the material attribute
+    //     attribute_term: "25",
     // });
     const response = await wooAPI.get(url);
 

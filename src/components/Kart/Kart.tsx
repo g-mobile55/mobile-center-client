@@ -22,23 +22,37 @@ function Kart() {
     const kart = useSelector((state: RootState) => state.kart);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [isConformOpen, setIsConformOpen] = useState<"close" | "open">("close");
 
     const handleSubmit = async (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        const query = new URLSearchParams(WebApp.initData);
-
-        const user = JSON.parse(query.get("user")!);
-
-        setIsLoading(true);
-
-        const response = await axiosAPI.post("webapp", {
-            user,
-            kart: kart.products,
-        });
-
-        if (response.status == 200) {
-            dispatch(resetKart());
-            dispatch(closeKart());
+        if (!WebApp.isActive) {
+            setIsConformOpen("close");
             setIsLoading(false);
+            throw new Error(
+                "You are not in telegram mini app. Pleas use Telegram mini app for full functionality"
+            );
+        }
+
+        try {
+            const query = new URLSearchParams(WebApp.initData);
+
+            const user = JSON.parse(query.get("user")!);
+
+            setIsLoading(true);
+
+            const response = await axiosAPI.post("webapp", {
+                user,
+                kart: kart.products,
+            });
+
+            if (response.status == 200) {
+                setIsConformOpen("close");
+                setIsLoading(false);
+                dispatch(resetKart());
+                dispatch(closeKart());
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -156,10 +170,12 @@ function Kart() {
                         </div>
                         <button
                             className={styles.submit}
-                            onClick={handleSubmit}
+                            onClick={() => {
+                                setIsConformOpen("open");
+                            }}
                             disabled={isLoading}
                         >
-                            {isLoading ? <LoadingCircle /> : "SUBMIT ORDER"}
+                            SUBMIT ORDER
                         </button>
                     </div>
                 </div>
@@ -168,6 +184,28 @@ function Kart() {
                     The Kart is empty. Pleas add products to your Kart to view them here.
                 </p>
             )}
+            <div className={`${styles.conform} ${styles[isConformOpen]}`}>
+                <div>
+                    <h4>Are you sure you want to submit your order?</h4>
+                    <div className={styles["conformation-buttons-wrapper"]}>
+                        <button
+                            className={`${styles["conformation-buttons"]} ${styles.yes}`}
+                            onClick={handleSubmit}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <LoadingCircle /> : "Yes"}
+                        </button>
+                        <button
+                            className={`${styles["conformation-buttons"]} ${styles.cancel}`}
+                            onClick={() => {
+                                setIsConformOpen("close");
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

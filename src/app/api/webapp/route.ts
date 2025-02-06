@@ -69,6 +69,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return previousValue + currentValue.subtotal;
         }, 0);
 
+        worksheet.addRow({});
         worksheet.addRow({ price: "Total", subtotal: `${total}₽` });
 
         const fileBuffer = await workbook.xlsx.writeBuffer();

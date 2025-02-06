@@ -98,7 +98,6 @@ function ProductCard(product: ProductT) {
                 <div className={styles.price}>
                     <p>{price}&#8381;</p>
                 </div>
-                <Link href={`/product/${id}`}>More</Link>
             </div>
             <AddToCartBtn handleClick={handleClick} btnType="button" />
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     closeKart,
@@ -14,7 +14,7 @@ import { GoTrash } from "react-icons/go";
 import WebApp from "@twa-dev/sdk";
 import Image from "next/image";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
-import LoadingCircle from "../Buttons/LoadingCircle";
+import LoadingSpinner from "../Buttons/LoadingSpinner";
 
 import styles from "./kart.module.scss";
 
@@ -24,7 +24,7 @@ function Kart() {
     const [isLoading, setIsLoading] = useState(false);
     const [isConformOpen, setIsConformOpen] = useState<"close" | "open">("close");
 
-    const handleSubmit = async (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleSubmit = async (e: MouseEvent) => {
         if (!WebApp.isActive) {
             setIsConformOpen("close");
             setIsLoading(false);
@@ -193,15 +193,24 @@ function Kart() {
                             onClick={handleSubmit}
                             disabled={isLoading}
                         >
-                            {isLoading ? <LoadingCircle /> : "Yes"}
+                            {isLoading ? (
+                                <LoadingSpinner width={40} height={40} fill="#fff" />
+                            ) : (
+                                "Yes"
+                            )}
                         </button>
                         <button
                             className={`${styles["conformation-buttons"]} ${styles.cancel}`}
                             onClick={() => {
                                 setIsConformOpen("close");
                             }}
+                            disabled={isLoading}
                         >
-                            Cancel
+                            {isLoading ? (
+                                <LoadingSpinner width={40} height={40} fill="#212121" />
+                            ) : (
+                                "Cancel"
+                            )}
                         </button>
                     </div>
                 </div>

@@ -275,6 +275,7 @@
         text-align: center;
         margin-bottom: 0.5rem;
         font-size: 1.1rem;
+        color: #ffffffe7;
     }
 }
 
@@ -287,16 +288,17 @@
     column-gap: 0.3rem;
 
     .yes {
-        background: rgb(0, 190, 0);
+        border-color: white;
     }
 
     .cancel {
-        background: red;
+        background: rgb(128, 128, 128);
+        border-color: #212121;
+        color: #212121;
     }
 
     .yes,
     .cancel {
-        border-color: white;
         padding: 0.7rem 0;
     }
 }

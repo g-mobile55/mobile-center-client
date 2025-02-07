@@ -1,13 +1,11 @@
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import LoadingSpinner from "@/components/Buttons/LoadingSpinner";
 
 import styles from "./page.module.scss";
 
 function loading() {
     return (
         <div className={styles["loading-page"]}>
-            <div className={styles.loading}>
-                <AiOutlineLoading3Quarters />
-            </div>
+            <LoadingSpinner width={100} height={100} />
         </div>
     );
 }

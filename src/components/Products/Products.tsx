@@ -3,18 +3,20 @@ import ProductCard from "./ProductCard";
 import styles from "./productCard.module.scss";
 import { wooAPI } from "@/lib/helpers/wooAPI";
 
+type SParamsT = {
+    brand: string | undefined;
+    category: string | undefined;
+    attribute: string | string[] | undefined;
+    attribute_term: string | string[] | undefined;
+    page: string | undefined;
+};
+
 async function Products({
     searchParams,
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const sParams = (await searchParams) as {
-        brand: string | undefined;
-        category: string | undefined;
-        attribute: string | string[] | undefined;
-        attribute_term: string | string[] | undefined;
-        page: string | undefined;
-    };
+    const sParams = (await searchParams) as SParamsT;
 
     const urlSearchParams = new URLSearchParams();
 
@@ -40,8 +42,6 @@ async function Products({
 
     urlSearchParams.append("per_page", "2");
 
-    console.log(urlSearchParams.toString());
-
     // const url = Object.keys(sParams).length
     //     ? `products/?${urlSearchParams.toString()}`
     //     : "products";
@@ -64,12 +64,7 @@ async function Products({
                 <ProductCard
                     key={product.id}
                     image={product.images[0].src}
-                    brands={
-                        // product.attributes.filter(
-                        //     (attribute: any) => attribute.name === "Phone Brand"
-                        // )[0]?.options
-                        product.brands
-                    }
+                    brands={product.brands}
                     name={product.name}
                     price={product.price}
                     id={product.id}

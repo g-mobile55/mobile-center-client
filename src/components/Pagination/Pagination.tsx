@@ -1,11 +1,12 @@
 "use client";
 import { useSelector } from "react-redux";
-import { useState, useTransition, MouseEvent } from "react";
+import { useTransition, MouseEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RootState } from "@/lib/redux/store";
-import LoadingCircle from "../Buttons/LoadingCircle";
 
 import styles from "./pagination.module.scss";
+import LoadingSpinner from "../Buttons/LoadingSpinner";
+import { axiosAPI } from "@/lib/helpers/axiosAPI";
 
 function Pagination() {
     const [isPending, startTransition] = useTransition();
@@ -17,7 +18,15 @@ function Pagination() {
     const handleNext = (e: MouseEvent) => {
         e.preventDefault();
 
-        startTransition(() => {
+        startTransition(async () => {
+            const url = new URLSearchParams(`per_page=2&page=${+currentPage + 2}&${searchParams}`);
+            try {
+                const { data } = await axiosAPI.get(`products/?${url.toString()}`);
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
+
             router.push(`/?per_page=2&page=${+currentPage + 1}&${searchParams}`);
         });
     };
@@ -40,7 +49,13 @@ function Pagination() {
                 className={styles.button}
                 disabled={isPending || currentPage == 1}
             >
-                {isPending ? <LoadingCircle /> : currentPage == 1 ? "|" : "<"}
+                {isPending ? (
+                    <LoadingSpinner width={32} height={32} fill="#000000" />
+                ) : currentPage == 1 ? (
+                    "|"
+                ) : (
+                    "<"
+                )}
             </button>
             <button
                 type="button"
@@ -48,7 +63,7 @@ function Pagination() {
                 className={styles.button}
                 disabled={isPending}
             >
-                {isPending ? <LoadingCircle /> : ">"}
+                {isPending ? <LoadingSpinner width={32} height={32} fill="#000000" /> : ">"}
             </button>
         </div>
     );

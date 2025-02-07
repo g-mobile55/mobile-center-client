@@ -1,13 +1,13 @@
 import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "react";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
-import LoadingCircle from "../Buttons/LoadingCircle";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilter, populateFilter } from "@/lib/redux/features/filterSlice";
 import { setSearchParams } from "@/lib/redux/features/searchParamsSlice";
 import { RootState } from "@/lib/redux/store";
-import styles from "./header.module.scss";
 import Dropdown from "./Dropdown";
+import styles from "./header.module.scss";
+import LoadingSpinner from "../Buttons/LoadingSpinner";
 
 function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const router = useRouter();
@@ -32,7 +32,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     useEffect(() => {
         console.log("effect");
         axiosAPI
-            .get("products")
+            .get("products/properties")
             .then((response) => {
                 setBrands(response.data.brands);
                 setCategories(response.data.categories);
@@ -52,7 +52,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
             .catch((error) => console.log(error));
     }, []);
 
-    const handleApply = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleApply = (e: MouseEvent) => {
         const searchParams = new URLSearchParams();
         e.preventDefault();
 
@@ -96,7 +96,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                             forProperty="brands"
                         />
                     ) : (
-                        <LoadingCircle />
+                        <LoadingSpinner width={40} height={40} fill="#fff" />
                     )}
                 </div>
                 <div>
@@ -108,7 +108,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                             forProperty="categories"
                         />
                     ) : (
-                        <LoadingCircle />
+                        <LoadingSpinner width={40} height={40} fill="#fff" />
                     )}
                 </div>
                 <div>
@@ -129,7 +129,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                                 );
                             })
                     ) : (
-                        <LoadingCircle />
+                        <LoadingSpinner width={40} height={40} fill="#fff" />
                     )}
                 </div>
                 <div className={styles.information}>
@@ -143,7 +143,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
                     onClick={handleApply}
                     disabled={isPending}
                 >
-                    {isPending ? <LoadingCircle /> : "Apply"}
+                    {isPending ? <LoadingSpinner width={40} height={40} fill="#888888" /> : "Apply"}
                 </button>
             </div>
         </div>

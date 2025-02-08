@@ -1,7 +1,9 @@
 import React from "react";
 import ProductCard from "./ProductCard";
-import styles from "./productCard.module.scss";
+import { PER_PAGE } from "@/lib/constants/constants";
 import { wooAPI } from "@/lib/helpers/wooAPI";
+
+import styles from "./productCard.module.scss";
 
 type SParamsT = {
     brand: string | undefined;
@@ -40,11 +42,8 @@ async function Products({
         urlSearchParams.append("page", sParams.page);
     }
 
-    urlSearchParams.append("per_page", "2");
+    urlSearchParams.append("per_page", String(PER_PAGE));
 
-    // const url = Object.keys(sParams).length
-    //     ? `products/?${urlSearchParams.toString()}`
-    //     : "products";
     const url = `products/?${urlSearchParams.toString()}`;
 
     // console.log(url);
@@ -55,8 +54,6 @@ async function Products({
     //     attribute_term: "25",
     // });
     const response = await wooAPI.get(url);
-
-    // console.log(response.data);
 
     return (
         <div className={styles["card-container"]}>

@@ -1,40 +1,30 @@
 "use client";
-import { useSelector } from "react-redux";
-import { useTransition, MouseEvent, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition, MouseEvent, useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { setLastPage } from "@/lib/redux/features/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
+import { axiosAPI } from "@/lib/helpers/axiosAPI";
+import LoadingSpinner from "../Buttons/LoadingSpinner";
 
 import styles from "./pagination.module.scss";
-import LoadingSpinner from "../Buttons/LoadingSpinner";
-import { axiosAPI } from "@/lib/helpers/axiosAPI";
 
 function Pagination() {
+    const isExecuted = useRef(false);
     const [isPending, startTransition] = useTransition();
-    const { searchParams } = useSelector((state: RootState) => state.searchParams);
     const router = useRouter();
     const routerSearchParams = useSearchParams();
     const currentPage = routerSearchParams.get("page") || 1;
-    const [isLastPage, setIsLastPage] = useState<boolean>(false);
+    const searchParams = new URLSearchParams(routerSearchParams.toString());
+    searchParams.delete("page");
+    const { lastPage } = useSelector((state: RootState) => state.filter);
+    const dispatch = useDispatch();
 
     const handleNext = (e: MouseEvent) => {
         e.preventDefault();
 
         startTransition(async () => {
-            router.push(`/?per_page=2&page=${+currentPage + 1}&${searchParams}`);
-
-            try {
-                const url = new URLSearchParams(
-                    `per_page=2&page=${+currentPage + 2}&${searchParams}`
-                );
-                const { data } = await axiosAPI.get(`products?${url.toString()}`);
-                if (!data.length) {
-                    setIsLastPage(true);
-                } else {
-                    setIsLastPage(false);
-                }
-            } catch (error) {
-                console.log(error);
-            }
+            router.push(`/?page=${+currentPage + 1}&${searchParams}`);
         });
     };
 
@@ -44,27 +34,25 @@ function Pagination() {
         e.preventDefault();
 
         startTransition(() => {
-            router.push(`/?per_page=2&page=${+currentPage - 1}&${searchParams}`);
-            setIsLastPage(false);
+            router.push(`/?page=${+currentPage - 1}&${searchParams}`);
         });
     };
 
     useEffect(() => {
-        const url = new URLSearchParams(`per_page=2&page=${+currentPage + 1}&${searchParams}`);
-        console.log(url.toString());
+        if (isExecuted && routerSearchParams.size) return;
+        isExecuted.current = true;
+
+        const url = new URLSearchParams(`${searchParams}`);
+        console.log("EFFECT RUN");
 
         axiosAPI
-            .get(`products?${url.toString()}`)
+            .get(`products/headers?${url}`)
             .then((response) => {
                 const { data } = response;
-                if (!data.length) {
-                    setIsLastPage(true);
-                } else {
-                    setIsLastPage(false);
-                }
+                dispatch(setLastPage(data["x-wp-totalpages"]));
             })
             .catch((error) => console.log(error));
-    }, []);
+    }, [routerSearchParams]);
 
     return (
         <div className={styles.pagination}>
@@ -86,11 +74,11 @@ function Pagination() {
                 type="button"
                 onClick={handleNext}
                 className={styles.button}
-                disabled={isPending || isLastPage}
+                disabled={isPending || lastPage == currentPage}
             >
                 {isPending ? (
                     <LoadingSpinner width={32} height={32} fill="#000000" />
-                ) : isLastPage ? (
+                ) : lastPage == currentPage ? (
                     "|"
                 ) : (
                     ">"

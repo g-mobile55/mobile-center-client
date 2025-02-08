@@ -5,12 +5,14 @@ export type FilterStateT = {
     brands: string[];
     categories: string[];
     attributes: { [key: string]: string[] };
+    lastPage: number;
 };
 
 const initialState: FilterStateT = {
     brands: [],
     categories: [],
     attributes: {},
+    lastPage: 1,
 };
 
 export const filterSlice = createSlice({
@@ -46,10 +48,13 @@ export const filterSlice = createSlice({
                 }
             }
         },
+        setLastPage: (state, action) => {
+            state.lastPage = action.payload;
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { setFilter, populateFilter } = filterSlice.actions;
+export const { setFilter, populateFilter, setLastPage } = filterSlice.actions;
 
 export default filterSlice.reducer;

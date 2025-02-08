@@ -2,7 +2,7 @@ import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "rea
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter, populateFilter } from "@/lib/redux/features/filterSlice";
+import { setFilter, populateFilter, setLastPage } from "@/lib/redux/features/filterSlice";
 import { setSearchParams } from "@/lib/redux/features/searchParamsSlice";
 import { RootState } from "@/lib/redux/store";
 import Dropdown from "./Dropdown";
@@ -12,7 +12,6 @@ import LoadingSpinner from "../Buttons/LoadingSpinner";
 function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const routerSearchParams = useSearchParams();
 
     const dispatch = useDispatch();
     const filterState = useSelector((state: RootState) => state.filter);
@@ -79,8 +78,17 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
         }
 
         dispatch(setSearchParams(searchParams.toString()));
-        startTransition(() => {
+        startTransition(async () => {
             router.push(`/?${searchParams.toString()}`);
+
+            try {
+                const url = new URLSearchParams(`${searchParams}`);
+
+                const { data } = await axiosAPI.get(`products/headers?${url}`);
+                dispatch(setLastPage(data["x-wp-totalpages"]));
+            } catch (error) {
+                console.log(error);
+            }
         });
     };
 

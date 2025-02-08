@@ -44,10 +44,10 @@ function Header() {
             </div>
             <div className={styles.nav}>
                 <button className={styles["filter-button"]} onClick={handleFilterClick}>
-                    Фильтр <FaFilter />
+                    Фильтр <FaFilter fill="#403d5a" />
                 </button>
 
-                <Filter isFilterOpen={isFilterOpen} />
+                <Filter isFilterOpen={isFilterOpen} setIsFilterOpen={setIsFilterOpen} />
             </div>
         </header>
     );

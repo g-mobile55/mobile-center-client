@@ -12,8 +12,6 @@ async function page({ params }: { params: { productID: string } }) {
     const product = response.data;
     const images = response.data.images as ImagesT;
 
-    console.log(product);
-
     return (
         <div className={styles.page}>
             <DetailsGallery images={images} />

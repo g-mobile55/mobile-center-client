@@ -1,6 +1,14 @@
-import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "react";
+import {
+    useEffect,
+    useState,
+    ChangeEvent,
+    MouseEvent,
+    useTransition,
+    Dispatch,
+    SetStateAction,
+} from "react";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilter, populateFilter, setLastPage } from "@/lib/redux/features/filterSlice";
 import { setSearchParams } from "@/lib/redux/features/searchParamsSlice";
@@ -9,7 +17,13 @@ import Dropdown from "./Dropdown";
 import styles from "./header.module.scss";
 import LoadingSpinner from "../Buttons/LoadingSpinner";
 
-function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
+function Filter({
+    isFilterOpen,
+    setIsFilterOpen,
+}: {
+    isFilterOpen: "close" | "open";
+    setIsFilterOpen: Dispatch<SetStateAction<"close" | "open">>;
+}) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
@@ -81,6 +95,7 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
         startTransition(async () => {
             router.push(`/?${searchParams.toString()}`);
 
+            setIsFilterOpen("close");
             try {
                 const url = new URLSearchParams(`${searchParams}`);
 

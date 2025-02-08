@@ -25,7 +25,7 @@ function Kart() {
     const [isConformOpen, setIsConformOpen] = useState<"close" | "open">("close");
 
     const handleSubmit = async (e: MouseEvent) => {
-        if (!WebApp.isActive) {
+        if (!WebApp.initData) {
             setIsConformOpen("close");
             setIsLoading(false);
             throw new Error(
@@ -194,7 +194,7 @@ function Kart() {
                             disabled={isLoading}
                         >
                             {isLoading ? (
-                                <LoadingSpinner width={40} height={40} fill="#fff" />
+                                <LoadingSpinner width={35} height={35} fill="#fff" />
                             ) : (
                                 "Yes"
                             )}
@@ -207,7 +207,7 @@ function Kart() {
                             disabled={isLoading}
                         >
                             {isLoading ? (
-                                <LoadingSpinner width={40} height={40} fill="#212121" />
+                                <LoadingSpinner width={35} height={35} fill="#212121" />
                             ) : (
                                 "Cancel"
                             )}

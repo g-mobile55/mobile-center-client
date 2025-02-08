@@ -190,11 +190,22 @@
 
     .dropdown-list {
         transform-origin: top;
-        transition: transform 300ms;
+        transition: all 300ms;
+        opacity: 1;
+
+        label,
+        input {
+            cursor: pointer;
+        }
+
+        input {
+            background-color: black;
+        }
     }
 
     .dropdown-list.close {
         transform: scale(1, 0);
+        opacity: 0;
     }
 }
 

@@ -1,6 +1,7 @@
 import { wooAPI } from "@/lib/helpers/wooAPI";
 
 export async function GET() {
+    console.log("GEEEEEEEEEET");
     try {
         const [{ data: brands }, { data: attributes }, { data: categories }] = await Promise.all([
             wooAPI.get("products/brands"),

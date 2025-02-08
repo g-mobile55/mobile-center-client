@@ -1,55 +1,13 @@
 import { wooAPI } from "@/lib/helpers/wooAPI";
+import { NextRequest } from "next/server";
 
-type SParamsT = {
-    brand: string | undefined;
-    category: string | undefined;
-    attribute: string | string[] | undefined;
-    attribute_term: string | string[] | undefined;
-    page: string | undefined;
-};
-
-export async function GET({
-    searchParams,
-}: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export async function GET(request: NextRequest) {
     try {
-        // const sParams = (await searchParams) as SParamsT;
+        const url = `products/?${request.nextUrl.searchParams.toString()}`;
 
-        console.log("PARAMS", searchParams);
+        const response = await wooAPI.get(url);
 
-        // const urlSearchParams = new URLSearchParams();
-
-        // if (sParams.brand) urlSearchParams.append("brand", sParams.brand);
-
-        // if (sParams.category) urlSearchParams.append("category", sParams.category);
-
-        // if (sParams.attribute && sParams.attribute_term) {
-        //     if (
-        //         typeof sParams.attribute === "string" &&
-        //         typeof sParams.attribute_term === "string"
-        //     ) {
-        //         urlSearchParams.append("attribute", sParams.attribute);
-        //         urlSearchParams.append("attribute_term", sParams.attribute_term);
-        //     } else {
-        //         for (let i = 0; i < sParams.attribute.length; i++) {
-        //             urlSearchParams.append("attribute", sParams.attribute[i]);
-        //             urlSearchParams.append("attribute_term", sParams.attribute_term[i]);
-        //         }
-        //     }
-        // }
-
-        // if (sParams.page) {
-        //     urlSearchParams.append("page", sParams.page + 1);
-        // }
-
-        // urlSearchParams.append("per_page", "2");
-
-        // const url = `products/?${urlSearchParams.toString()}`;
-
-        // const response = await wooAPI.get(url);
-
-        return Response.json({ data: "OK" });
+        return Response.json(response.data);
     } catch (error) {
         console.log(error);
         return Response.json({ error });

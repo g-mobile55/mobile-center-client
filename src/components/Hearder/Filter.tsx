@@ -1,6 +1,6 @@
 import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "react";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilter, populateFilter } from "@/lib/redux/features/filterSlice";
 import { setSearchParams } from "@/lib/redux/features/searchParamsSlice";
@@ -12,6 +12,7 @@ import LoadingSpinner from "../Buttons/LoadingSpinner";
 function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
+    const routerSearchParams = useSearchParams();
 
     const dispatch = useDispatch();
     const filterState = useSelector((state: RootState) => state.filter);
@@ -30,7 +31,6 @@ function Filter({ isFilterOpen }: { isFilterOpen: "close" | "open" }) {
     const [attributes, setAttributes] = useState([]);
 
     useEffect(() => {
-        console.log("effect");
         axiosAPI
             .get("products/properties")
             .then((response) => {

@@ -1,6 +1,6 @@
 "use client";
 import type { Metadata } from "next";
-import Header from "@/components/Hearder/Header";
+import { Suspense } from "react";
 import Alert from "@/components/Alert/Alert";
 import Pagination from "@/components/Pagination/Pagination";
 import { Provider } from "react-redux";
@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 
 const DynamicFooter = dynamic(() => import("../components/Footer"), { ssr: false });
 const DynamicKart = dynamic(() => import("../components/Kart/Kart"), { ssr: false });
+const DynamicHeader = dynamic(() => import("../components/Hearder/Header"), { ssr: false });
 
 import { Poppins } from "next/font/google";
 
@@ -31,10 +32,12 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${poppins.className} mainPage fixed`}>
                 <Provider store={store}>
-                    <Header />
+                    <DynamicHeader />
                     <Alert />
                     {children}
-                    <Pagination />
+                    <Suspense fallback={<div>Loading Pagination...</div>}>
+                        <Pagination />
+                    </Suspense>
                     <DynamicKart />
                     <DynamicFooter />
                 </Provider>

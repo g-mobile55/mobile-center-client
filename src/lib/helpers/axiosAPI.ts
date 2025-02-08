@@ -1,6 +1,7 @@
 import axios from "axios";
+import { BASE_URL_FOR_AXIOS } from "../constants/constants";
 
-const webAppURI = "https://vsn5nrl9-3000.euw.devtunnels.ms";
+const webAppURI = BASE_URL_FOR_AXIOS;
 
 if (!webAppURI) throw new Error("Provide web app uri.");
 

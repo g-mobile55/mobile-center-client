@@ -16,7 +16,7 @@ function Header() {
         }
     }, []);
 
-    const handleFilterClick = (e: MouseEvent<HTMLButtonElement>) => {
+    const handleFilterClick = (e: MouseEvent) => {
         e.preventDefault();
         setIsFilterOpen((state) => {
             const body = document.querySelector("body");
@@ -47,7 +47,7 @@ function Header() {
                     Фильтр <FaFilter fill="#403d5a" />
                 </button>
 
-                <Filter isFilterOpen={isFilterOpen} setIsFilterOpen={setIsFilterOpen} />
+                <Filter isFilterOpen={isFilterOpen} handleFilterClick={handleFilterClick} />
             </div>
         </header>
     );

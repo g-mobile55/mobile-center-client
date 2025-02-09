@@ -1,12 +1,4 @@
-import {
-    useEffect,
-    useState,
-    ChangeEvent,
-    MouseEvent,
-    useTransition,
-    Dispatch,
-    SetStateAction,
-} from "react";
+import { useEffect, useState, ChangeEvent, MouseEvent, useTransition } from "react";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,10 +11,10 @@ import LoadingSpinner from "../Buttons/LoadingSpinner";
 
 function Filter({
     isFilterOpen,
-    setIsFilterOpen,
+    handleFilterClick,
 }: {
     isFilterOpen: "close" | "open";
-    setIsFilterOpen: Dispatch<SetStateAction<"close" | "open">>;
+    handleFilterClick: (e: MouseEvent) => void;
 }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
@@ -95,7 +87,7 @@ function Filter({
         startTransition(async () => {
             router.push(`/?${searchParams.toString()}`);
 
-            setIsFilterOpen("close");
+            handleFilterClick(e);
             try {
                 const url = new URLSearchParams(`${searchParams}`);
 

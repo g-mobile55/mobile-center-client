@@ -263,7 +263,8 @@
     z-index: 10;
     top: 0;
     transform-origin: top;
-    transition: transform 300ms;
+    opacity: 1;
+    transition: all 300ms;
 
     padding: 0 0.5rem;
 
@@ -281,6 +282,7 @@
 
 .conform.close {
     transform: scale(1, 0);
+    opacity: 0;
 }
 
 .conformation-buttons-wrapper {

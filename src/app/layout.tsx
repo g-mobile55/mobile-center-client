@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Alert from "@/components/Alert/Alert";
 import Pagination from "@/components/Pagination/Pagination";
+import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
 import dynamic from "next/dynamic";
@@ -28,6 +29,8 @@ export default function RootLayout({
     children: React.ReactNode;
     kart: React.ReactNode;
 }>) {
+    const pathName = usePathname();
+
     return (
         <html lang="en">
             <body className={`${poppins.className} mainPage fixed`}>
@@ -35,9 +38,11 @@ export default function RootLayout({
                     <DynamicHeader />
                     <Alert />
                     {children}
-                    <Suspense fallback={<div>Loading Pagination...</div>}>
-                        <Pagination />
-                    </Suspense>
+                    {pathName === "/" ? (
+                        <Suspense fallback={<div>Loading Pagination...</div>}>
+                            <Pagination />
+                        </Suspense>
+                    ) : null}
                     <DynamicKart />
                     <DynamicFooter />
                 </Provider>

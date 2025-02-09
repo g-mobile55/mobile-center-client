@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { InputFile } from "grammy";
-import { bot } from "../bot/route";
+import { bot } from "../bot/activate/route";
 import Excel from "exceljs";
 
 type Products = {

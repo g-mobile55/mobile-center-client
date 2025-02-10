@@ -1,6 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
-import { PER_PAGE } from "@/lib/constants/constants";
+import { PER_PAGE, REQUESTED_PRODUCTS_STATUS } from "@/lib/constants/constants";
 import { wooAPI } from "@/lib/helpers/wooAPI";
 
 import styles from "./productCard.module.scss";
@@ -43,6 +43,7 @@ async function Products({
     }
 
     urlSearchParams.append("per_page", String(PER_PAGE));
+    urlSearchParams.append("status", REQUESTED_PRODUCTS_STATUS);
 
     const url = `products/?${urlSearchParams.toString()}`;
 

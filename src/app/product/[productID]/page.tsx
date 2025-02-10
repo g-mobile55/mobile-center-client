@@ -24,7 +24,7 @@ async function page({ params }: { params: { productID: string } }) {
                         categories: product.categories,
                         attributes: product.attributes,
                         brands: product.brands,
-                        image: images[0].src,
+                        image: images[0]?.src,
                     }}
                 />
             </div>

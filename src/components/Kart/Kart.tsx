@@ -82,7 +82,7 @@ function Kart() {
                                         </div>
                                         <div className={styles["image-wrapper"]}>
                                             <Image
-                                                src={product.image}
+                                                src={product.image || "/image-placeholder.jpg"}
                                                 alt=""
                                                 layout="fill"
                                                 objectFit="cover"

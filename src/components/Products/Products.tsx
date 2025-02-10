@@ -60,7 +60,7 @@ async function Products({
             {response.data.map((product: any) => (
                 <ProductCard
                     key={product.id}
-                    image={product.images[0].src}
+                    image={product.images[0]?.src}
                     brands={product.brands}
                     name={product.name}
                     price={product.price}

@@ -57,7 +57,7 @@ function ProductCard(product: ProductT) {
         <div className={styles.card}>
             <Link href={`/product/${id}`} className={styles["image-container"]}>
                 <Image
-                    src={image}
+                    src={image || "/image-placeholder.jpg"}
                     alt="product image"
                     className={styles.image}
                     layout="fill"

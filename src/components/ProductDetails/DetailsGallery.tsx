@@ -5,25 +5,46 @@ import styles from "./details.module.scss";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-import type { ImagesT } from "@/lib/types/woo.types";
+import type { ImagesT, ImageT } from "@/lib/types/woo.types";
 
-function DetailsGallery({ images }: { images: ImagesT }) {
-    const [currentImage, setCurrentImage] = useState(images[0].src);
+function DetailsGallery({ images }: { images: ImagesT | undefined }) {
+    const initialState = (images && (images[0]?.src || "/image-placeholder.jpg")) as string;
+    const [currentImage, setCurrentImage] = useState(initialState);
 
     return (
         <div className={styles.wrapper}>
             <div className={styles["side-images"]}>
-                {images.map((image, index: number) => (
+                {images ? (
+                    images.map((image, index: number) => (
+                        <button
+                            className={styles["image-button"]}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setCurrentImage(image.src || "/image-placeholder.jpg");
+                            }}
+                            key={`${image.id} + ${index}`}
+                        >
+                            <Image
+                                src={image.src}
+                                alt=""
+                                layout="fill"
+                                objectFit="cover"
+                                quality={25}
+                                placeholder="blur"
+                                blurDataURL="/imagesceleton.gif"
+                            />
+                        </button>
+                    ))
+                ) : (
                     <button
                         className={styles["image-button"]}
                         onClick={(e) => {
                             e.preventDefault();
-                            setCurrentImage(image.src);
+                            return;
                         }}
-                        key={`${image.id} + ${index}`}
                     >
                         <Image
-                            src={image.src}
+                            src="/image-placeholder.jpg"
                             alt=""
                             layout="fill"
                             objectFit="cover"
@@ -32,7 +53,7 @@ function DetailsGallery({ images }: { images: ImagesT }) {
                             blurDataURL="/imagesceleton.gif"
                         />
                     </button>
-                ))}
+                )}
             </div>
             <div className={styles["selected-image"]}>
                 <Zoom>

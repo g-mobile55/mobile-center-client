@@ -56,9 +56,6 @@ async function Products({
     // });
     const response = await wooAPI.get(url);
 
-    console.log(url);
-    console.log(response.data);
-
     return (
         <div className={styles["card-container"]}>
             {response.data.map((product: any) => (

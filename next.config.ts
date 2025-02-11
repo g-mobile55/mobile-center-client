@@ -3,7 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
     reactStrictMode: true,
     images: {
-        domains: ["mobile-center.gg", "localhost", "mobile79.beget.tech"],
+        domains: [
+            "mobilecenter.gg",
+            "localhost",
+            "mobile79.beget.tech",
+            "mobycenter.ru",
+            "mobycenter.store",
+        ],
     },
     serverExternalPackages: ["grammy", "exceljs"],
     typescript: {

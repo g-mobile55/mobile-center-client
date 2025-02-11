@@ -54,7 +54,10 @@ async function Products({
     //     attribute: "pa_color", // Specify the material attribute
     //     attribute_term: "25",
     // });
+
     const response = await wooAPI.get(url);
+
+    // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
 
     return (
         <div className={styles["card-container"]}>

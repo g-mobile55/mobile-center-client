@@ -89,6 +89,8 @@ function ProductCard(product: ProductT) {
                                         </option>
                                     ))}
                                 </select>
+                            ) : attribute.name === "For Device" ? (
+                                attribute.options
                             ) : null}
                         </li>
                     );

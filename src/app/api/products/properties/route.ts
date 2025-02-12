@@ -10,7 +10,7 @@ export async function GET() {
 
         const terms = await Promise.all(
             attributes.map((attribute: any) => {
-                return wooAPI.get(`products/attributes/${attribute.id}/terms`);
+                return wooAPI.get(`products/attributes/${attribute.id}/terms/?per_page=100`);
             })
         );
 

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 color: product.attributes.filter((attribute: any) => attribute.name === "Color")[0]?.options,
                 quantity: product.quantity,
                 brand: product.brands.map((brand: any) => brand.name).join("/"),
-                for:  product.attributes.filter((attribute: any) => attribute.name === "Phone Brand")[0]?.options,
+                for:  product.attributes.filter((attribute: any) => attribute.name === "For Device")[0]?.options,
                 price: product.price,
                 subtotal: product.price * product.quantity
             }
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     try {
         const workbook = new Excel.Workbook();
-        const worksheet = workbook.addWorksheet("Countries List");
+        const worksheet = workbook.addWorksheet("Invoice");
 
         worksheet.columns = [
             { key: "name", header: "Name" },

@@ -131,7 +131,7 @@ function Filter({
                         // Remove filter later to get full filter
                         // remove it when custom php endpoint for attributes will be ready.
                         attributes
-                            .filter((item) => item.parentAttribute === "pa_phone_brand")
+                            .filter((item) => item.parentAttribute === "pa_for_device")
                             .map((attribute) => {
                                 return (
                                     <Dropdown

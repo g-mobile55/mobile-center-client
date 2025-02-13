@@ -45,10 +45,16 @@ type ProductFromExcel = {
     SKU: string | undefined;
 };
 
-await bot.api.setMyCommands([
-    { command: "start", description: "GET online store button." },
-    { command: "map_json", description: "GET mapped data." },
-]);
+console.log("NODE ENV", process.env.NODE_ENV);
+
+if (process.env.NODE_ENV === "development") {
+    await bot.api.setMyCommands([
+        { command: "start", description: "GET online store button." },
+        { command: "map_json", description: "GET mapped data." },
+    ]);
+} else {
+    await bot.api.setMyCommands([{ command: "start", description: "GET online store button." }]);
+}
 
 bot.command("start", async (ctx) => {
     try {
@@ -67,9 +73,9 @@ bot.command("user", async (ctx) => {
 bot.command("map_json", async (ctx) => {
     try {
         const [{ data: brands }, { data: attributes }, { data: categories }] = await Promise.all([
-            wooAPI.get("products/brands"),
+            wooAPI.get("products/brands/?per_page=100"),
             wooAPI.get("products/attributes"),
-            wooAPI.get("products/categories"),
+            wooAPI.get("products/categories/?per_page=100"),
         ]);
 
         const terms = await Promise.all(
@@ -202,7 +208,7 @@ bot.command("import", async (ctx) => {
         //
         const workBook = new Excel.Workbook();
 
-        await workBook.xlsx.readFile("./imports/import.xlsx");
+        await workBook.xlsx.readFile("./imports/recent models.xlsx");
 
         const jsonData: object[] = [];
         workBook.worksheets.forEach(function (sheet) {
@@ -236,14 +242,16 @@ bot.command("import", async (ctx) => {
                 stock_status: "instock",
                 brands: [{ id: wcMAP.brands[product.Brands] }],
                 categories: product.Categories.split(";").map((category) => {
-                    return { id: wcMAP.categories[category] };
+                    return { id: wcMAP.categories[category.trim()] };
                 }),
                 attributes: [
                     ...Object.keys(wcMAP.attributes)
                         .filter((key) => product[key])
                         .map((key) => ({
                             id: wcMAP.attributes[key].self,
-                            options: product[key].split(","),
+                            visible: true,
+                            variation: true,
+                            options: product[key].split(",").map((str: string) => str.trim()),
                         })),
                 ],
             };
@@ -252,9 +260,10 @@ bot.command("import", async (ctx) => {
 
         const index = 46;
 
+        console.log(productsToCreate[7]);
         // console.log(jsonData[index], productsToCreate[index], productsToCreate[index].attributes);
 
-        await wooAPI.post("products/batch", { create: productsToCreate });
+        // await wooAPI.post("products/batch", { create: productsToCreate });
         // {
         //     Group: 'Camera lens',
         //     Brands: 'KEEPHONE',

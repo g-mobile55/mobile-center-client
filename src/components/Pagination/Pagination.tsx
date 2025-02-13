@@ -24,7 +24,7 @@ function Pagination() {
         e.preventDefault();
 
         startTransition(async () => {
-            router.push(`/?page=${+currentPage + 1}&${searchParams}`);
+            router.push(`/?page=${+currentPage + 1}&${searchParams}`, { scroll: true });
         });
     };
 
@@ -34,7 +34,7 @@ function Pagination() {
         e.preventDefault();
 
         startTransition(() => {
-            router.push(`/?page=${+currentPage - 1}&${searchParams}`);
+            router.push(`/?page=${+currentPage - 1}&${searchParams}`, { scroll: true });
         });
     };
 

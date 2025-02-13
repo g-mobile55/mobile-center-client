@@ -33,7 +33,7 @@ export default function RootLayout({
 
     return (
         <html lang="en">
-            <body className={`${poppins.className} mainPage fixed`}>
+            <body className={`${poppins.className} mainPage`}>
                 <Provider store={store}>
                     <DynamicHeader />
                     <Alert />

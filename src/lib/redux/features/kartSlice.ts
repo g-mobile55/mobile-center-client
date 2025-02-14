@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { current } from "@reduxjs/toolkit";
+import isEqual from "lodash.isequal";
 import { type ProductT } from "@/lib/types/woo.types";
 
 export interface KartState {
@@ -19,17 +20,11 @@ export const kartSlice = createSlice({
         addToKart: (state, action) => {
             if (
                 state.products.find((product) => {
-                    return (
-                        JSON.stringify({ ...product, quantity: 0 }) ===
-                        JSON.stringify({ ...action.payload, quantity: 0 })
-                    );
+                    return isEqual({ ...product, quantity: 0 }, { ...action.payload, quantity: 0 });
                 })
             ) {
                 for (const product of state.products) {
-                    if (
-                        JSON.stringify({ ...product, quantity: 0 }) ===
-                        JSON.stringify({ ...action.payload, quantity: 0 })
-                    ) {
+                    if (isEqual({ ...product, quantity: 0 }, { ...action.payload, quantity: 0 })) {
                         product.quantity++;
                     }
                 }
@@ -39,10 +34,8 @@ export const kartSlice = createSlice({
         },
         removeFromKart: (state, action) => {
             state.products.splice(
-                state.products.findIndex(
-                    (product) =>
-                        JSON.stringify({ ...product, quantity: 0 }) ===
-                        JSON.stringify({ ...action.payload, quantity: 0 })
+                state.products.findIndex((product) =>
+                    isEqual({ ...product, quantity: 0 }, { ...action.payload, quantity: 0 })
                 ),
                 1
             );
@@ -50,19 +43,14 @@ export const kartSlice = createSlice({
         decreaseQuantity: (state, action) => {
             if (action.payload.quantity > 1) {
                 for (const product of state.products) {
-                    if (
-                        JSON.stringify({ ...product, quantity: 0 }) ===
-                        JSON.stringify({ ...action.payload, quantity: 0 })
-                    ) {
+                    if (isEqual({ ...product, quantity: 0 }, { ...action.payload, quantity: 0 })) {
                         product.quantity--;
                     }
                 }
             } else {
                 state.products.splice(
-                    state.products.findIndex(
-                        (product) =>
-                            JSON.stringify({ ...product, quantity: 0 }) ===
-                            JSON.stringify({ ...action.payload, quantity: 0 })
+                    state.products.findIndex((product) =>
+                        isEqual({ ...product, quantity: 0 }, { ...action.payload, quantity: 0 })
                     ),
                     1
                 );

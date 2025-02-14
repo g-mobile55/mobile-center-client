@@ -45,7 +45,6 @@ export default function RootLayout({
                     ) : null}
                     <DynamicKart />
                     <Footer />
-                    {/* <DynamicFooter /> */}
                 </Provider>
             </body>
         </html>

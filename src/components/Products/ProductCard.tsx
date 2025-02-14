@@ -52,8 +52,6 @@ function ProductCard(product: ProductT) {
                         (variation: any) => variation.name === reducedToName
                     )[0];
 
-                    console.log(reducedToName);
-
                     if (filteredVariation) newState.price = filteredVariation.price;
 
                     return newState;
@@ -76,8 +74,6 @@ function ProductCard(product: ProductT) {
                 const filteredVariation = variations.filter(
                     (variation: any) => variation.name === reducedToName
                 )[0];
-
-                console.log(reducedToName);
 
                 if (filteredVariation) newState.price = filteredVariation.price;
 

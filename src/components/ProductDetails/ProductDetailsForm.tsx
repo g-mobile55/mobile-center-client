@@ -1,15 +1,19 @@
 "use client";
 import { useCallback, useState } from "react";
-import { type FormEvent, type ChangeEvent } from "react";
+import { type FormEvent, type ChangeEvent, useTransition } from "react";
 import { useDispatch } from "react-redux";
 import { addToKart } from "@/lib/redux/features/kartSlice";
 import { showAlert, closeAlert } from "@/lib/redux/features/alertSlice";
 import AddToCartBtn from "../Buttons/AddToCartBtn";
 import debounce from "lodash.debounce";
+import { axiosAPI } from "@/lib/helpers/axiosAPI";
+import LoadingSpinner from "../Buttons/LoadingSpinner";
 import styles from "./productDetails.module.scss";
 
 function ProductDetailsForm({ product }: { product: any }) {
     const dispatch = useDispatch();
+    const [variations, setVariations] = useState();
+    const [isPending, startTransition] = useTransition();
 
     const [state, setState] = useState({
         ...product,
@@ -20,18 +24,58 @@ function ProductDetailsForm({ product }: { product: any }) {
     });
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setState((state: any) => {
-            const newState = {
-                ...state,
-                attributes: state.attributes.map((attribute: any) => {
-                    if (attribute.name === e.target.name) {
-                        return { ...attribute, options: e.target.value };
-                    }
-                    return attribute;
-                }),
-            };
-            return newState;
-        });
+        if (!variations) {
+            startTransition(async () => {
+                const { data } = await axiosAPI(`products/${state.id}/variations`);
+                setVariations(data);
+
+                setState((state: any) => {
+                    const newState = {
+                        ...state,
+                        attributes: state.attributes.map((attribute: any) => {
+                            if (attribute.name === e.target.name) {
+                                return { ...attribute, options: e.target.value };
+                            }
+                            return attribute;
+                        }),
+                    };
+
+                    const reducedToName = newState.attributes
+                        .map((item) => item.options)
+                        .join(", ");
+
+                    const filteredVariation = data.filter(
+                        (variation: any) => variation.name === reducedToName
+                    )[0];
+
+                    if (filteredVariation) newState.price = filteredVariation.price;
+
+                    return newState;
+                });
+            });
+        } else {
+            setState((state: any) => {
+                const newState = {
+                    ...state,
+                    attributes: state.attributes.map((attribute: any) => {
+                        if (attribute.name === e.target.name) {
+                            return { ...attribute, options: e.target.value };
+                        }
+                        return attribute;
+                    }),
+                };
+
+                const reducedToName = newState.attributes.map((item) => item.options).join(", ");
+
+                const filteredVariation = variations.filter(
+                    (variation: any) => variation.name === reducedToName
+                )[0];
+
+                if (filteredVariation) newState.price = filteredVariation.price;
+
+                return newState;
+            });
+        }
     };
 
     const handleAlert = () => {
@@ -50,12 +94,16 @@ function ProductDetailsForm({ product }: { product: any }) {
         debouncedAlert();
     };
 
-    console.log(product.categories.name);
     return (
         <>
             <form onSubmit={handleSubmit} className={styles.form}>
+                {isPending && (
+                    <div className={styles["loading-foreground"]}>
+                        <LoadingSpinner width={60} height={60} fill="#000000" />
+                    </div>
+                )}
                 <h1>{product.name}</h1>
-                <p className={styles.price}>{product.price}&#8381;</p>
+                <p className={styles.price}>{state.price}&#8381;</p>
                 <p>{product.categories.name}</p>
                 <ul>
                     {product.attributes.map((attribute: any, index: number) => {

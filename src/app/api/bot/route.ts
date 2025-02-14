@@ -208,7 +208,7 @@ bot.command("import", async (ctx) => {
         //
         const workBook = new Excel.Workbook();
 
-        await workBook.xlsx.readFile("./imports/recent models.xlsx");
+        await workBook.xlsx.readFile("./imports/chargers-holders-cables.xlsx");
 
         const jsonData: object[] = [];
         workBook.worksheets.forEach(function (sheet) {
@@ -231,7 +231,7 @@ bot.command("import", async (ctx) => {
 
         const productsToCreate: PruductTocreateT[] = [];
 
-        for (const product of jsonData.slice(0, 10) as ProductFromExcel[]) {
+        for (const product of jsonData.slice(0, 16) as ProductFromExcel[]) {
             const productToCreate: PruductTocreateT = {
                 name: product.Name.trim(),
                 status: "draft",
@@ -259,10 +259,7 @@ bot.command("import", async (ctx) => {
         }
 
         const index = 46;
-
-        console.log(productsToCreate[7]);
         // console.log(jsonData[index], productsToCreate[index], productsToCreate[index].attributes);
-
         // await wooAPI.post("products/batch", { create: productsToCreate });
         // {
         //     Group: 'Camera lens',

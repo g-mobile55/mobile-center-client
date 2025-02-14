@@ -55,17 +55,6 @@ function ProductDetailsForm({ product }: { product: any }) {
         <>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <h1>{product.name}</h1>
-                <input type="text" hidden name="productName" value={product.name} readOnly />
-                <input type="text" hidden name="productPrice" value={product.price} readOnly />
-                <input type="text" hidden name="productId" value={product.id} readOnly />
-                <input type="text" hidden name="productImage" value={product.image} readOnly />
-                <input
-                    type="text"
-                    hidden
-                    name="productBrand"
-                    value={product.brands[0].name}
-                    readOnly
-                />
                 <p className={styles.price}>{product.price}&#8381;</p>
                 <p>{product.categories.name}</p>
                 <ul>

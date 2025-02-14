@@ -6,9 +6,9 @@ import Pagination from "@/components/Pagination/Pagination";
 import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
+import Footer from "../components/Footer";
 import dynamic from "next/dynamic";
 
-const DynamicFooter = dynamic(() => import("../components/Footer"), { ssr: false });
 const DynamicKart = dynamic(() => import("../components/Kart/Kart"), { ssr: false });
 const DynamicHeader = dynamic(() => import("../components/Hearder/Header"), { ssr: false });
 
@@ -44,7 +44,8 @@ export default function RootLayout({
                         </Suspense>
                     ) : null}
                     <DynamicKart />
-                    <DynamicFooter />
+                    <Footer />
+                    {/* <DynamicFooter /> */}
                 </Provider>
             </body>
         </html>

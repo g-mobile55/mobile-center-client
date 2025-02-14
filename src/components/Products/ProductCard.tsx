@@ -3,16 +3,21 @@ import Image from "next/image";
 import Link from "next/link";
 import AddToCartBtn from "../Buttons/AddToCartBtn";
 import { ProductT } from "@/lib/types/woo.types";
-import { ChangeEvent, MouseEvent, useState, useCallback } from "react";
+import { ChangeEvent, MouseEvent, useState, useCallback, useTransition } from "react";
 import debounce from "lodash.debounce";
 import { useDispatch } from "react-redux";
 import { addToKart } from "@/lib/redux/features/kartSlice";
 import { showAlert, closeAlert } from "@/lib/redux/features/alertSlice";
+import { axiosAPI } from "@/lib/helpers/axiosAPI";
+import LoadingSpinner from "../Buttons/LoadingSpinner";
+
 import styles from "./productCard.module.scss";
 
 function ProductCard(product: ProductT) {
     const { name, id, image, attributes, brands, categories, price, quantity } = product;
     const dispatch = useDispatch();
+    const [variations, setVariations] = useState();
+    const [isPending, startTransition] = useTransition();
 
     const [state, setState] = useState({
         ...product,
@@ -23,18 +28,62 @@ function ProductCard(product: ProductT) {
     });
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setState((state: any) => {
-            const newState = {
-                ...state,
-                attributes: state.attributes.map((attribute: any) => {
-                    if (attribute.name === e.target.name) {
-                        return { ...attribute, options: e.target.value };
-                    }
-                    return attribute;
-                }),
-            };
-            return newState;
-        });
+        if (!variations) {
+            startTransition(async () => {
+                const { data } = await axiosAPI(`products/${state.id}/variations`);
+                setVariations(data);
+
+                setState((state: any) => {
+                    const newState = {
+                        ...state,
+                        attributes: state.attributes.map((attribute: any) => {
+                            if (attribute.name === e.target.name) {
+                                return { ...attribute, options: e.target.value };
+                            }
+                            return attribute;
+                        }),
+                    };
+
+                    const reducedToName = newState.attributes
+                        .map((item) => item.options)
+                        .join(", ");
+
+                    const filteredVariation = data.filter(
+                        (variation: any) => variation.name === reducedToName
+                    )[0];
+
+                    console.log(reducedToName);
+
+                    if (filteredVariation) newState.price = filteredVariation.price;
+
+                    return newState;
+                });
+            });
+        } else {
+            setState((state: any) => {
+                const newState = {
+                    ...state,
+                    attributes: state.attributes.map((attribute: any) => {
+                        if (attribute.name === e.target.name) {
+                            return { ...attribute, options: e.target.value };
+                        }
+                        return attribute;
+                    }),
+                };
+
+                const reducedToName = newState.attributes.map((item) => item.options).join(", ");
+
+                const filteredVariation = variations.filter(
+                    (variation: any) => variation.name === reducedToName
+                )[0];
+
+                console.log(reducedToName);
+
+                if (filteredVariation) newState.price = filteredVariation.price;
+
+                return newState;
+            });
+        }
     };
 
     const handleAlert = () => {
@@ -55,6 +104,11 @@ function ProductCard(product: ProductT) {
 
     return (
         <div className={styles.card}>
+            {isPending && (
+                <div className={styles["loading-foreground"]}>
+                    <LoadingSpinner width={60} height={60} fill="#000000" />
+                </div>
+            )}
             <Link href={`/product/${id}`} className={styles["image-container"]}>
                 <Image
                     src={image || "/image-placeholder.jpg"}
@@ -98,7 +152,7 @@ function ProductCard(product: ProductT) {
             </ul>
             <div className={styles["price-wrapper"]}>
                 <div className={styles.price}>
-                    <p>{price}&#8381;</p>
+                    <p>{state.price}&#8381;</p>
                 </div>
             </div>
             <AddToCartBtn handleClick={handleClick} btnType="button" />

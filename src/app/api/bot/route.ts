@@ -51,6 +51,7 @@ if (process.env.NODE_ENV === "development") {
     await bot.api.setMyCommands([
         { command: "start", description: "GET online store button." },
         { command: "map_json", description: "GET mapped data." },
+        { command: "variations", description: "GET variations of product" },
     ]);
 } else {
     await bot.api.setMyCommands([{ command: "start", description: "GET online store button." }]);
@@ -166,10 +167,6 @@ bot.command("map_json", async (ctx) => {
             map,
         };
 
-        // console.log(
-        //     util.inspect(dataToWrite, { showHidden: false, depth: null, colors: true })
-        // );
-
         await fs.writeFile("./maps.json", JSON.stringify(dataToWrite, null, 4));
     } catch (error) {
         console.log(error);
@@ -258,22 +255,19 @@ bot.command("import", async (ctx) => {
             productsToCreate.push(productToCreate);
         }
 
-        const index = 46;
-        // console.log(jsonData[index], productsToCreate[index], productsToCreate[index].attributes);
         // await wooAPI.post("products/batch", { create: productsToCreate });
-        // {
-        //     Group: 'Camera lens',
-        //     Brands: 'KEEPHONE',
-        //     Name: ' CALVIN CAMERA LENS ',
-        //     'Regular Price': '300,00',
-        //     Categories: 'Camera Protector',
-        //     Material: undefined,
-        //     'For Device': 'IP 15, 15 PLUS',
-        //     Color: 'Black, Light Blue, Light Green, Light yellow, Pink',
-        //     'Stock Quantity': undefined,
-        //     'Min Price': '15,00',
-        //     SKU: undefined
-        //   },
+    } catch (error) {
+        // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
+        console.log(error);
+    }
+});
+
+bot.command("variations", async (ctx) => {
+    try {
+        const { data: variations } = await wooAPI.get("products/651/variations");
+        const { data: variation } = await wooAPI.get("products/651/variations/670");
+
+        console.log(variation);
     } catch (error) {
         // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
         console.log(error);

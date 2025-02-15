@@ -3,9 +3,9 @@ import { wooAPI } from "@/lib/helpers/wooAPI";
 export async function GET() {
     try {
         const [{ data: brands }, { data: attributes }, { data: categories }] = await Promise.all([
-            wooAPI.get("products/brands"),
+            wooAPI.get("products/brands/?per_page=100"),
             wooAPI.get("products/attributes"),
-            wooAPI.get("products/categories"),
+            wooAPI.get("products/categories/?per_page=100"),
         ]);
 
         const terms = await Promise.all(

@@ -36,13 +36,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const products: Products[] = data.kart.map((product: any) => {
         // prettier-ignore
         return {
+                brand: product.brands.map((brand: any) => brand.name).join("/"),
                 name: product.name,
                 color: product.attributes.filter((attribute: any) => attribute.name === "Color")[0]?.options,
                 quantity: product.quantity,
-                brand: product.brands.map((brand: any) => brand.name).join("/"),
+                capacity:  product.attributes.filter((attribute: any) => attribute.name === "Capacity")[0]?.options,
                 for:  product.attributes.filter((attribute: any) => attribute.name === "For Device")[0]?.options,
                 price: product.price,
-                subtotal: product.price * product.quantity
+                subtotal: product.price * product.quantity,
             }
     });
 
@@ -51,11 +52,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const worksheet = workbook.addWorksheet("Invoice");
 
         worksheet.columns = [
+            { key: "brand", header: "Brand" },
             { key: "name", header: "Name" },
             { key: "for", header: "For" },
             { key: "color", header: "Color" },
             { key: "quantity", header: "Quantity" },
-            { key: "brand", header: "Brand" },
+            { key: "capacity", header: "Capacity" },
             { key: "price", header: "Price" },
             { key: "subtotal", header: "Subtotal" },
         ];
@@ -80,9 +82,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         const fileName = `invoice-${user.first_name}-${day}-${month}-${year}.xlsx`;
 
-        await bot.api.sendMessage(user.id, "🎉Your order is accepted.🎉");
         // @ts-expect-error
-        await bot.api.sendDocument(user.id, new InputFile(fileBuffer, fileName));
+        await bot.api.sendDocument(user.id, new InputFile(fileBuffer, fileName), {
+            caption: "🎉Your order is accepted.🎉",
+        });
 
         const chat = await bot.api.getChat(user.id);
         const { username, has_private_forwards, id, first_name } = chat;

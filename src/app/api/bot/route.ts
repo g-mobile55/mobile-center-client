@@ -12,7 +12,7 @@ const webAppURI = process.env.WEB_APP_URI;
 
 if (!webAppURI) throw new Error("Provide web app uri");
 
-const webappBtn = new InlineKeyboard().webApp("ONLINE STORE", webAppURI);
+const webappBtn = new InlineKeyboard().webApp("VISIT", webAppURI);
 const keyboard = new Keyboard().webApp("BTN", webAppURI).resized();
 
 type PruductTocreateT = {
@@ -52,6 +52,8 @@ if (process.env.NODE_ENV === "development") {
         { command: "start", description: "GET online store button." },
         { command: "map_json", description: "GET mapped data." },
         { command: "variations", description: "GET variations of product" },
+        { command: "import", description: "Import products to woo from excel file" },
+        { command: "user", description: "Log user id" },
     ]);
 } else {
     await bot.api.setMyCommands([{ command: "start", description: "GET online store button." }]);
@@ -59,7 +61,7 @@ if (process.env.NODE_ENV === "development") {
 
 bot.command("start", async (ctx) => {
     try {
-        await ctx.reply("WEB APP", { reply_markup: webappBtn });
+        await ctx.reply("🛍 Our online store 🛍".toLocaleUpperCase(), { reply_markup: webappBtn });
     } catch (error) {
         console.log(error);
     }
@@ -67,6 +69,7 @@ bot.command("start", async (ctx) => {
 
 bot.command("user", async (ctx) => {
     const chat = await ctx.getChat();
+    console.log(chat);
     const { has_private_forwards } = chat;
     console.log(has_private_forwards);
 });
@@ -228,7 +231,7 @@ bot.command("import", async (ctx) => {
 
         const productsToCreate: PruductTocreateT[] = [];
 
-        for (const product of jsonData.slice(0, 16) as ProductFromExcel[]) {
+        for (const product of jsonData.slice(2, 16) as ProductFromExcel[]) {
             const productToCreate: PruductTocreateT = {
                 name: product.Name.trim(),
                 status: "draft",
@@ -255,7 +258,7 @@ bot.command("import", async (ctx) => {
             productsToCreate.push(productToCreate);
         }
 
-        // await wooAPI.post("products/batch", { create: productsToCreate });
+        await wooAPI.post("products/batch", { create: productsToCreate });
     } catch (error) {
         // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
         console.log(error);

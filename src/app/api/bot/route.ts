@@ -65,6 +65,17 @@ bot.command("start", async (ctx) => {
     } catch (error) {
         console.log(error);
     }
+
+    try {
+        await wooAPI.post("telegram-user", {
+            telegram_id: ctx.from.id,
+            first_name: ctx.from.first_name,
+            last_name: ctx.from.last_name || null,
+            username: ctx.from.username || null,
+        });
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 bot.command("user", async (ctx) => {
@@ -259,18 +270,6 @@ bot.command("import", async (ctx) => {
         }
 
         await wooAPI.post("products/batch", { create: productsToCreate });
-    } catch (error) {
-        // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
-        console.log(error);
-    }
-});
-
-bot.command("variations", async (ctx) => {
-    try {
-        const { data: variations } = await wooAPI.get("products/651/variations");
-        const { data: variation } = await wooAPI.get("products/651/variations/670");
-
-        console.log(variation);
     } catch (error) {
         // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
         console.log(error);

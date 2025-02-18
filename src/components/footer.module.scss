@@ -18,9 +18,10 @@
 }
 
 .back-button {
-    background-color: none;
+    background: none repeat scroll 0 0 transparent;
     border: none;
     cursor: pointer;
+    color: rgb(64, 61, 90);
 }
 
 .back-button:active,

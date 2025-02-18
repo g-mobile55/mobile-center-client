@@ -17,6 +17,17 @@
     color: rgb(64, 61, 90);
 }
 
+.back-button {
+    background-color: none;
+    border: none;
+    cursor: pointer;
+}
+
+.back-button:active,
+.kart-button:active {
+    color: white;
+}
+
 .kart-button {
     background: none repeat scroll 0 0 transparent;
     border: medium none;

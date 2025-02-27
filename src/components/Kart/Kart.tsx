@@ -106,17 +106,15 @@ function Kart() {
 
                                 <div className={styles.price}>
                                     <div>
-                                        <p className={styles.price}>
-                                            Price: {product.price}&#8381;
-                                        </p>
+                                        <p className={styles.price}>Цена: {product.price}&#8381;</p>
 
                                         <p className={styles.price}>
-                                            Subtotal: {Number(product.price) * product.quantity}
+                                            Сумма: {Number(product.price) * product.quantity}
                                             &#8381;
                                         </p>
                                     </div>
                                     <div className={styles.qty}>
-                                        <span>Qty.</span>
+                                        <span>Кол-во.</span>
                                         {product.quantity}
                                     </div>
                                 </div>
@@ -158,7 +156,7 @@ function Kart() {
                     })}
                     <div className={styles.total}>
                         <div className={styles["total-inner"]}>
-                            <span>Total</span>
+                            <span>Итого</span>
                             <span>
                                 {kart.products
                                     .map((product) => {

@@ -12,7 +12,7 @@ function Dropdown({
     data: any;
     handleChange: any;
     forProperty: "brands" | "categories" | "attributes";
-    title: "Brands" | "Categories" | "Attributes";
+    title: "Brands" | "Categories" | "Attributes" | "Бренд" | "Категории";
 }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState<"open" | "close">("close");
 

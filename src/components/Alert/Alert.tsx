@@ -7,7 +7,7 @@ function Alert() {
 
     return (
         <div className={`${styles.alert} ${styles[alert.alertClassName]}`}>
-            <p>The product has been added to your Kart.</p>
+            <p>Товар успешно добавлен в корзину.</p>
         </div>
     );
 }

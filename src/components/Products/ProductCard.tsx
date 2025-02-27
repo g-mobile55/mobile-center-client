@@ -12,9 +12,10 @@ import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import LoadingSpinner from "../Buttons/LoadingSpinner";
 
 import styles from "./productCard.module.scss";
+import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
 function ProductCard(product: ProductT) {
-    const { name, id, image, attributes, brands, categories, price, quantity } = product;
+    const { name, id, image, attributes, brands, categories, price, quantity, isLast } = product;
     const dispatch = useDispatch();
     const [variations, setVariations] = useState();
     const [isPending, startTransition] = useTransition();
@@ -100,6 +101,8 @@ function ProductCard(product: ProductT) {
 
     return (
         <div className={styles.card}>
+            {isLast ? <ScrollToTop /> : null}
+
             {isPending && (
                 <div className={styles["loading-foreground"]}>
                     <LoadingSpinner width={60} height={60} fill="#000000" />

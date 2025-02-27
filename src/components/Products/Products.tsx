@@ -61,7 +61,7 @@ async function Products({
 
     return (
         <div className={styles["card-container"]}>
-            {response.data.map((product: any) => (
+            {response.data.map((product: any, index: number) => (
                 <ProductCard
                     key={product.id}
                     image={product.images[0]?.src}
@@ -72,6 +72,7 @@ async function Products({
                     attributes={product.attributes}
                     categories={product.categories}
                     quantity={0}
+                    isLast={index === response.data.length - 1}
                 />
             ))}
         </div>

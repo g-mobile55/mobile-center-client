@@ -23,7 +23,7 @@ function Pagination() {
     const handleNext = (e: MouseEvent) => {
         e.preventDefault();
 
-        startTransition(async () => {
+        startTransition(() => {
             router.push(`/?page=${+currentPage + 1}&${searchParams}`, { scroll: true });
         });
     };

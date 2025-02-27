@@ -175,7 +175,7 @@ function Kart() {
                             }}
                             disabled={isLoading}
                         >
-                            SUBMIT ORDER
+                            ЗАКАЗАТЬ
                         </button>
                     </div>
                 </div>

@@ -12,11 +12,12 @@ import dynamic from "next/dynamic";
 const DynamicKart = dynamic(() => import("../components/Kart/Kart"), { ssr: false });
 const DynamicHeader = dynamic(() => import("../components/Hearder/Header"), { ssr: false });
 
-import { Poppins } from "next/font/google";
+import { Poppins, Montserrat } from "next/font/google";
 
 import "./globals.css";
 
 const poppins = Poppins({ weight: "300", subsets: ["latin"] });
+const montserrat = Montserrat({ weight: "300", subsets: ["latin"] });
 
 // export const metadata: Metadata = {
 //     title: "Create Next App",
@@ -33,7 +34,7 @@ export default function RootLayout({
 
     return (
         <html lang="en">
-            <body className={`${poppins.className} mainPage`}>
+            <body className={`${montserrat.className} ${poppins.className} mainPage`}>
                 <Provider store={store}>
                     <DynamicHeader />
                     <Alert />

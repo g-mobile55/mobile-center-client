@@ -105,7 +105,7 @@ function Filter({
                 <div>
                     {brands.length ? (
                         <Dropdown
-                            title="Brands"
+                            title="Бренд"
                             data={brands}
                             handleChange={handleChange}
                             forProperty="brands"
@@ -117,7 +117,7 @@ function Filter({
                 <div>
                     {categories.length ? (
                         <Dropdown
-                            title="Categories"
+                            title="Категории"
                             data={categories}
                             handleChange={handleChange}
                             forProperty="categories"
@@ -126,7 +126,7 @@ function Filter({
                         <LoadingSpinner width={40} height={40} fill="#fff" />
                     )}
                 </div>
-                <div>
+                {/* <div>
                     {attributes.length ? (
                         // Remove filter later to get full filter
                         // remove it when custom php endpoint for attributes will be ready.
@@ -146,9 +146,9 @@ function Filter({
                     ) : (
                         <LoadingSpinner width={40} height={40} fill="#fff" />
                     )}
-                </div>
+                </div> */}
                 <div className={styles.information}>
-                    <p>More filter options are coming soon.</p>
+                    <p>Больше опций фильтрации в разработке и скоро будут доступны.</p>
                 </div>
             </form>
             <div className={styles["button-container"]}>
@@ -158,7 +158,11 @@ function Filter({
                     onClick={handleApply}
                     disabled={isPending}
                 >
-                    {isPending ? <LoadingSpinner width={40} height={40} fill="#888888" /> : "Apply"}
+                    {isPending ? (
+                        <LoadingSpinner width={40} height={40} fill="#888888" />
+                    ) : (
+                        "Применить"
+                    )}
                 </button>
             </div>
         </div>

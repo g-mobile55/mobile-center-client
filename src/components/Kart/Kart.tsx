@@ -181,12 +181,13 @@ function Kart() {
                 </div>
             ) : (
                 <p className={styles["empty-kart"]}>
-                    The Kart is empty. Pleas add products to your Kart to view them here.
+                    Корзина пуста. Пожалуйста, добавьте товары в вашу корзину, чтобы просмотреть их
+                    здесь.
                 </p>
             )}
             <div className={`${styles.conform} ${styles[isConformOpen]}`}>
                 <div>
-                    <h4>Are you sure you want to submit your order?</h4>
+                    <h4>Вы уверены, что хотите оформить заказ?</h4>
                     <div className={styles["conformation-buttons-wrapper"]}>
                         <button
                             className={`${styles["conformation-buttons"]} ${styles.yes}`}
@@ -196,7 +197,7 @@ function Kart() {
                             {isLoading ? (
                                 <LoadingSpinner width={35} height={35} fill="#fff" />
                             ) : (
-                                "Yes"
+                                "Да"
                             )}
                         </button>
                         <button
@@ -209,7 +210,7 @@ function Kart() {
                             {isLoading ? (
                                 <LoadingSpinner width={35} height={35} fill="#212121" />
                             ) : (
-                                "Cancel"
+                                "Отмена"
                             )}
                         </button>
                     </div>

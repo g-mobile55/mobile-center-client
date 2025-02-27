@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { InputFile } from "grammy";
 import { bot } from "../bot/activate/route";
 import Excel from "exceljs";
+import { ruMessage } from "@/lib/messages/ru";
+
+const botMessages = ruMessage.bot;
+const excelMessages = ruMessage.excel;
 
 type Products = {
     name: string;
@@ -11,22 +15,6 @@ type Products = {
     brand: string;
     price: number;
     subtotal?: () => number;
-};
-
-const createMessage = (
-    username: string | undefined,
-    has_private_forwards: true | undefined,
-    id: number,
-    first_name = ""
-) => {
-    if (username) {
-        return `🤑 We have a new order from the user <a href="https://t.me/${username}">${first_name}</a>`;
-    }
-    if (!username && !has_private_forwards) {
-        return `🤑 We have a new order from the user <a href="tg://user?id=${id}">${first_name}</a>`;
-    }
-
-    return "🤑 We have a new order, users privacy 🥷🏻 settings do not allow to share they're profile.";
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -52,14 +40,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const worksheet = workbook.addWorksheet("Invoice");
 
         worksheet.columns = [
-            { key: "brand", header: "Brand" },
-            { key: "name", header: "Name" },
-            { key: "for", header: "For" },
-            { key: "color", header: "Color" },
-            { key: "quantity", header: "Quantity" },
-            { key: "capacity", header: "Capacity" },
-            { key: "price", header: "Price" },
-            { key: "subtotal", header: "Subtotal" },
+            { key: "brand", header: excelMessages.headers.Brand },
+            { key: "name", header: excelMessages.headers.Name },
+            { key: "for", header: excelMessages.headers.For },
+            { key: "color", header: excelMessages.headers.Color },
+            { key: "quantity", header: excelMessages.headers.Quantity },
+            { key: "capacity", header: excelMessages.headers.Capacity },
+            { key: "price", header: excelMessages.headers.Price },
+            { key: "subtotal", header: excelMessages.headers.Subtotal },
         ];
 
         products.forEach((item) => {
@@ -72,7 +60,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }, 0);
 
         worksheet.addRow({});
-        worksheet.addRow({ price: "Total", subtotal: `${total}₽` });
+        worksheet.addRow({ price: excelMessages.headers.Total, subtotal: `${total}₽` });
 
         const fileBuffer = await workbook.xlsx.writeBuffer();
         const date = new Date();
@@ -84,12 +72,17 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         // @ts-expect-error
         await bot.api.sendDocument(user.id, new InputFile(fileBuffer, fileName), {
-            caption: "🎉Your order is accepted.🎉",
+            caption: botMessages.orderAccepted,
         });
 
         const chat = await bot.api.getChat(user.id);
         const { username, has_private_forwards, id, first_name } = chat;
-        const messageToSend = createMessage(username, has_private_forwards, id, first_name);
+        const messageToSend = botMessages.adminChat.msgIncomingInvoice(
+            username,
+            has_private_forwards,
+            id,
+            first_name
+        );
 
         await bot.api.sendMessage(
             // @ts-expect-error

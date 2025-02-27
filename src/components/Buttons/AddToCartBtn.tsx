@@ -10,7 +10,7 @@ function AddToCartBtn({
     return (
         <div className={styles["button-container"]}>
             <button className={styles.button} onClick={handleClick} type={btnType}>
-                Add To Cart
+                В КОРЗИНУ
             </button>
         </div>
     );

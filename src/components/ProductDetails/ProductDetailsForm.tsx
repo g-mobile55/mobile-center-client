@@ -9,8 +9,11 @@ import debounce from "lodash.debounce";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import LoadingSpinner from "../Buttons/LoadingSpinner";
 import styles from "./productDetails.module.scss";
+import { ruMessage } from "@/lib/messages/ru";
 
 function ProductDetailsForm({ product }: { product: any }) {
+    const clientMessages = ruMessage.client;
+
     const dispatch = useDispatch();
     const [variations, setVariations] = useState();
     const [isPending, startTransition] = useTransition();
@@ -109,7 +112,9 @@ function ProductDetailsForm({ product }: { product: any }) {
                     {product.attributes.map((attribute: any, index: number) => {
                         return (
                             <li key={index} className={styles.attribute}>
-                                <span className={styles.title}>{attribute.name}:</span>
+                                <span className={styles.title}>
+                                    {clientMessages.product[attribute.name]}:
+                                </span>
                                 {attribute.options.length > 1 ? (
                                     <select
                                         name={attribute.name}
@@ -130,13 +135,13 @@ function ProductDetailsForm({ product }: { product: any }) {
                     })}
                 </ul>
                 <p>
-                    <span className={styles.title}>Category</span>:{" "}
+                    <span className={styles.title}>Категории</span>:{" "}
                     {product.categories.map((category: any) => {
                         return <span key={category.name}>{category.name}, </span>;
                     })}
                 </p>
                 <p>
-                    <span className={styles.title}>Brand</span>:{" "}
+                    <span className={styles.title}>Бренд</span>:{" "}
                     {product.brands.map((brand: any) => {
                         return <span key={brand.name}>{brand.name}, </span>;
                     })}

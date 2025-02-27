@@ -7,12 +7,14 @@ import fs from "fs/promises";
 import util from "util";
 import Excel from "exceljs";
 import { wcMAP } from "@/lib/maps/wcValueToIdMap";
+import { ruMessage } from "@/lib/messages/ru";
 
 const webAppURI = process.env.WEB_APP_URI;
+const botMessages = ruMessage.bot;
 
 if (!webAppURI) throw new Error("Provide web app uri");
 
-const webappBtn = new InlineKeyboard().webApp("VISIT", webAppURI);
+const webappBtn = new InlineKeyboard().webApp(botMessages.buttons.visit, webAppURI);
 const keyboard = new Keyboard().webApp("BTN", webAppURI).resized();
 
 type PruductTocreateT = {
@@ -56,12 +58,14 @@ if (process.env.NODE_ENV === "development") {
         { command: "user", description: "Log user id" },
     ]);
 } else {
-    await bot.api.setMyCommands([{ command: "start", description: "GET online store button." }]);
+    await bot.api.setMyCommands([
+        { command: "start", description: botMessages.commandDescriptions.start },
+    ]);
 }
 
 bot.command("start", async (ctx) => {
     try {
-        await ctx.reply("🛍 Our online store 🛍".toLocaleUpperCase(), { reply_markup: webappBtn });
+        await ctx.reply(botMessages.answersToCommand.start, { reply_markup: webappBtn });
     } catch (error) {
         console.log(error);
     }

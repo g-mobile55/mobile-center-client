@@ -34,6 +34,10 @@ export default function RootLayout({
 
     return (
         <html lang="en">
+            <head>
+                <title>Mobile Center Store</title>
+                <link rel="icon" type="image/svg+xml" href="/Logo Small.svg" />
+            </head>
             <body className={`${montserrat.className} ${poppins.className} mainPage`}>
                 <Provider store={store}>
                     <DynamicHeader />

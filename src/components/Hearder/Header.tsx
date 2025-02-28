@@ -5,6 +5,7 @@ import { FaFilter } from "react-icons/fa";
 import { RxDividerVertical } from "react-icons/rx";
 import Filter from "./Filter";
 import WebApp from "@twa-dev/sdk";
+import Image from "next/image";
 import styles from "./header.module.scss";
 
 function Header() {
@@ -37,7 +38,10 @@ function Header() {
     return (
         <header className={styles.header}>
             <h2>
-                <Link href="/">Mobile Center</Link>
+                <Link className={styles.logo} href="/">
+                    <Image src={"./Logo.svg"} width={32} height={32} alt="logo" />
+                    Mobile Center
+                </Link>
             </h2>
             <div className={styles["divider-container"]}>
                 <RxDividerVertical />

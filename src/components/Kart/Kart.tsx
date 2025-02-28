@@ -15,10 +15,13 @@ import WebApp from "@twa-dev/sdk";
 import Image from "next/image";
 import { axiosAPI } from "@/lib/helpers/axiosAPI";
 import LoadingSpinner from "../Buttons/LoadingSpinner";
+import { ruMessage } from "@/lib/messages/ru";
 
 import styles from "./kart.module.scss";
 
 function Kart() {
+    const clientMessages = ruMessage.client;
+
     const kart = useSelector((state: RootState) => state.kart);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +99,10 @@ function Kart() {
                                         {product.attributes.map((attribute) => {
                                             return (
                                                 <li key={attribute.name}>
-                                                    {attribute.name}{" "}
+                                                    {clientMessages.product[attribute.name]
+                                                        ? clientMessages.product[attribute.name]
+                                                        : attribute.name}
+                                                    {": "}
                                                     <span>{attribute.options}</span>
                                                 </li>
                                             );

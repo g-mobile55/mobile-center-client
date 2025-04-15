@@ -9,6 +9,16 @@ import Dropdown from "./Dropdown";
 import styles from "./header.module.scss";
 import LoadingSpinner from "../Buttons/LoadingSpinner";
 
+const manualCategories = [
+    { label: "Зашита на экран", name: "Screen Protector", id: "52" },
+    { label: "Зашита на Камеру", name: "Camera Protector", id: "47" },
+    { label: "Чехлы на телефоны", name: "Phone Case", id: "17" },
+    { label: "Селфи палки", name: "Selfie Stick", id: "124" },
+    { label: "Повербанки", name: "Power Bank", id: "95" },
+    { label: "Зарядные устроиства", name: "Charger", id: "55" },
+    { label: "Кабели - дата и зарядные", name: "Charging Cable", id: "57" },
+];
+
 function Filter({
     isFilterOpen,
     handleFilterClick,
@@ -109,22 +119,35 @@ function Filter({
                             data={brands}
                             handleChange={handleChange}
                             forProperty="brands"
+                            isManual={false}
                         />
                     ) : (
                         <LoadingSpinner width={40} height={40} fill="#fff" />
                     )}
                 </div>
                 <div>
-                    {categories.length ? (
+                    {/* Automatically fetching (fetching happens on initial render of the component by the useEffect hook) 
+                    all categories and they'r id's and placing them  on the websites filter*/}
+                    {/* {categories.length ? (
                         <Dropdown
                             title="Категории"
                             data={categories}
                             handleChange={handleChange}
                             forProperty="categories"
+                            isManual={false}
                         />
                     ) : (
                         <LoadingSpinner width={40} height={40} fill="#fff" />
-                    )}
+                    )} */}
+                    {
+                        <Dropdown
+                            title="Категории"
+                            data={manualCategories}
+                            handleChange={handleChange}
+                            forProperty="categories"
+                            isManual={true}
+                        />
+                    }
                 </div>
                 {/* <div>
                     {attributes.length ? (

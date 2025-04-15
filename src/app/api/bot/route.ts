@@ -56,6 +56,7 @@ if (process.env.NODE_ENV === "development") {
         { command: "variations", description: "GET variations of product" },
         { command: "import", description: "Import products to woo from excel file" },
         { command: "user", description: "Log user id" },
+        { command: "get_attributes", description: "Get attributes and they'r id's" },
     ]);
 } else {
     await bot.api.setMyCommands([
@@ -278,6 +279,21 @@ bot.command("import", async (ctx) => {
         // console.log(util.inspect(error, { showHidden: false, depth: null, colors: true }));
         console.log(error);
     }
+});
+
+bot.command("get_attributes", async (ctx) => {
+    const { data } = await wooAPI.get("products/categories/?per_page=100");
+    const filteredData = data.map(
+        (category) => `${category.slug}: name: "${category.name}", id: "${category.id}"`
+    );
+    const message = filteredData.join("\n");
+
+    await ctx.reply(`Here are all Categories 
+
+${message}
+        
+overal: ${filteredData.length}
+        `);
 });
 
 export const POST = webhookCallback(bot, "std/http");

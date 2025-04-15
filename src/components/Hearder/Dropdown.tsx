@@ -8,11 +8,13 @@ function Dropdown({
     handleChange,
     forProperty,
     title,
+    isManual,
 }: {
     data: any;
     handleChange: any;
     forProperty: "brands" | "categories" | "attributes";
     title: "Brands" | "Categories" | "Attributes" | "Бренд" | "Категории";
+    isManual: boolean;
 }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState<"open" | "close">("close");
 
@@ -46,6 +48,23 @@ function Dropdown({
                                               onChange={handleChange}
                                           />
                                           {term.name}
+                                      </label>
+                                  </li>
+                              );
+                          })
+                        : isManual
+                        ? data.map((manualCategory: any) => {
+                              return (
+                                  <li key={`${manualCategory.name} ${manualCategory.id}`}>
+                                      <label htmlFor={manualCategory.name}>
+                                          <input
+                                              type="checkbox"
+                                              name={forProperty}
+                                              value={`${manualCategory.name},${manualCategory.id}`}
+                                              id={manualCategory.name}
+                                              onChange={handleChange}
+                                          />
+                                          {manualCategory.label}
                                       </label>
                                   </li>
                               );

@@ -39,6 +39,9 @@ export const ruMessage = {
             Price: "Цена",
             Subtotal: "Сумма",
             Total: "Итого",
+            "Cable Type": "Тип кабеля",
+            "Cable Length": "Длина кабеля",
+            "Cable Wattage": "Ватт кабеля",
         },
     },
     client: {

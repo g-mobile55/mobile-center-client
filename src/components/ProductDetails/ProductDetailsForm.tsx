@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { type FormEvent, type ChangeEvent, useTransition } from "react";
 import { useDispatch } from "react-redux";
 import { addToKart } from "@/lib/redux/features/kartSlice";
@@ -26,51 +26,19 @@ function ProductDetailsForm({ product }: { product: any }) {
         quantity: 1,
     });
 
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!variations) {
-            startTransition(async () => {
-                const { data } = await axiosAPI(`products/${state.id}/variations`);
-                setVariations(data);
+    useEffect(() => {
+        startTransition(async () => {
+            const { data } = await axiosAPI(`products/${state.id}/variations`);
+            setVariations(data);
 
-                setState((state: any) => {
-                    const newState = {
-                        ...state,
-                        attributes: state.attributes.map((attribute: any) => {
-                            if (attribute.name === e.target.name) {
-                                return { ...attribute, options: e.target.value };
-                            }
-                            return attribute;
-                        }),
-                    };
-
-                    const reducedToName = newState.attributes
-                        .map((item) => item.options)
-                        .join(", ");
-
-                    const filteredVariation = data.filter(
-                        (variation: any) => variation.name === reducedToName
-                    )[0];
-
-                    if (filteredVariation) newState.price = filteredVariation.price;
-
-                    return newState;
-                });
-            });
-        } else {
             setState((state: any) => {
                 const newState = {
                     ...state,
-                    attributes: state.attributes.map((attribute: any) => {
-                        if (attribute.name === e.target.name) {
-                            return { ...attribute, options: e.target.value };
-                        }
-                        return attribute;
-                    }),
                 };
 
                 const reducedToName = newState.attributes.map((item) => item.options).join(", ");
 
-                const filteredVariation = variations.filter(
+                const filteredVariation = data.filter(
                     (variation: any) => variation.name === reducedToName
                 )[0];
 
@@ -78,7 +46,62 @@ function ProductDetailsForm({ product }: { product: any }) {
 
                 return newState;
             });
-        }
+        });
+    }, []);
+
+    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        // if (!variations) {
+        //     startTransition(async () => {
+        //         const { data } = await axiosAPI(`products/${state.id}/variations`);
+        //         setVariations(data);
+
+        //         setState((state: any) => {
+        //             const newState = {
+        //                 ...state,
+        //                 attributes: state.attributes.map((attribute: any) => {
+        //                     if (attribute.name === e.target.name) {
+        //                         return { ...attribute, options: e.target.value };
+        //                     }
+        //                     return attribute;
+        //                 }),
+        //             };
+
+        //             const reducedToName = newState.attributes
+        //                 .map((item) => item.options)
+        //                 .join(", ");
+
+        //             const filteredVariation = data.filter(
+        //                 (variation: any) => variation.name === reducedToName
+        //             )[0];
+
+        //             if (filteredVariation) newState.price = filteredVariation.price;
+
+        //             return newState;
+        //         });
+        //     });
+        // } else {
+        setState((state: any) => {
+            const newState = {
+                ...state,
+                attributes: state.attributes.map((attribute: any) => {
+                    if (attribute.name === e.target.name) {
+                        return { ...attribute, options: e.target.value };
+                    }
+                    return attribute;
+                }),
+            };
+
+            const reducedToName = newState.attributes.map((item) => item.options).join(", ");
+
+            const filteredVariation = variations.filter(
+                (variation: any) => variation.name === reducedToName
+            )[0];
+
+            if (filteredVariation) newState.price = filteredVariation.price;
+
+            return newState;
+        });
+        // }
     };
 
     const handleAlert = () => {
@@ -97,6 +120,8 @@ function ProductDetailsForm({ product }: { product: any }) {
         debouncedAlert();
     };
 
+    console.log(clientMessages.product);
+
     return (
         <>
             <form onSubmit={handleSubmit} className={styles.form}>
@@ -112,9 +137,7 @@ function ProductDetailsForm({ product }: { product: any }) {
                     {product.attributes.map((attribute: any, index: number) => {
                         return (
                             <li key={index} className={styles.attribute}>
-                                <span className={styles.title}>
-                                    {clientMessages.product[attribute.name]}:
-                                </span>
+                                <span className={styles.title}>{attribute.name}:</span>
                                 {attribute.options.length > 1 ? (
                                     <select
                                         name={attribute.name}

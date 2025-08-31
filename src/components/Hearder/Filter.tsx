@@ -49,10 +49,10 @@ function Filter({
         axiosAPI
             .get("products/properties")
             .then((response) => {
-                console.log(response.data.categories);
-
                 setBrands(response.data.brands);
-                setCategories(response.data.categories);
+                setCategories(
+                    response.data.categories.filter((category) => category.name !== "Uncategorized")
+                );
                 setAttributes(response.data.attributesTerms);
 
                 // populate filterState attributes with empty arrays

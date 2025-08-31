@@ -53,58 +53,58 @@ function ProductCard(product: ProductT) {
     }, []);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        if (!variations) {
-            startTransition(async () => {
-                const { data } = await axiosAPI(`products/${state.id}/variations`);
-                setVariations(data);
+        // if (!variations) {
+        //     startTransition(async () => {
+        //         const { data } = await axiosAPI(`products/${state.id}/variations`);
+        //         setVariations(data);
 
-                setState((state: any) => {
-                    const newState = {
-                        ...state,
-                        attributes: state.attributes.map((attribute: any) => {
-                            if (attribute.name === e.target.name) {
-                                return { ...attribute, options: e.target.value };
-                            }
-                            return attribute;
-                        }),
-                    };
+        //         setState((state: any) => {
+        //             const newState = {
+        //                 ...state,
+        //                 attributes: state.attributes.map((attribute: any) => {
+        //                     if (attribute.name === e.target.name) {
+        //                         return { ...attribute, options: e.target.value };
+        //                     }
+        //                     return attribute;
+        //                 }),
+        //             };
 
-                    const reducedToName = newState.attributes
-                        .map((item) => item.options)
-                        .join(", ");
+        //             const reducedToName = newState.attributes
+        //                 .map((item) => item.options)
+        //                 .join(", ");
 
-                    const filteredVariation = data.filter(
-                        (variation: any) => variation.name === reducedToName
-                    )[0];
+        //             const filteredVariation = data.filter(
+        //                 (variation: any) => variation.name === reducedToName
+        //             )[0];
 
-                    if (filteredVariation) newState.price = filteredVariation.price;
+        //             if (filteredVariation) newState.price = filteredVariation.price;
 
-                    return newState;
-                });
-            });
-        } else {
-            setState((state: any) => {
-                const newState = {
-                    ...state,
-                    attributes: state.attributes.map((attribute: any) => {
-                        if (attribute.name === e.target.name) {
-                            return { ...attribute, options: e.target.value };
-                        }
-                        return attribute;
-                    }),
-                };
+        //             return newState;
+        //         });
+        //     });
+        // } else {
+        setState((state: any) => {
+            const newState = {
+                ...state,
+                attributes: state.attributes.map((attribute: any) => {
+                    if (attribute.name === e.target.name) {
+                        return { ...attribute, options: e.target.value };
+                    }
+                    return attribute;
+                }),
+            };
 
-                const reducedToName = newState.attributes.map((item) => item.options).join(", ");
+            const reducedToName = newState.attributes.map((item) => item.options).join(", ");
 
-                const filteredVariation = variations.filter(
-                    (variation: any) => variation.name === reducedToName
-                )[0];
+            const filteredVariation = variations.filter(
+                (variation: any) => variation.name === reducedToName
+            )[0];
 
-                if (filteredVariation) newState.price = filteredVariation.price;
+            if (filteredVariation) newState.price = filteredVariation.price;
 
-                return newState;
-            });
-        }
+            return newState;
+        });
+        // }
     };
 
     const handleAlert = () => {

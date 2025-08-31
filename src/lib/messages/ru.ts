@@ -42,6 +42,7 @@ export const ruMessage = {
             "Cable Type": "Тип кабеля",
             "Cable Length": "Длина кабеля",
             "Cable Wattage": "Ватт кабеля",
+            Attributes: "Характиристики",
         },
     },
     client: {

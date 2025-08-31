@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
             "mobile79.beget.tech",
             "mobycenter.ru",
             "mobycenter.store",
+            "mobile-center.local",
         ],
     },
     serverExternalPackages: ["grammy", "exceljs"],

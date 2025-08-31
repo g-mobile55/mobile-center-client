@@ -49,6 +49,8 @@ function Filter({
         axiosAPI
             .get("products/properties")
             .then((response) => {
+                console.log(response.data.categories);
+
                 setBrands(response.data.brands);
                 setCategories(response.data.categories);
                 setAttributes(response.data.attributesTerms);
@@ -113,7 +115,7 @@ function Filter({
         <div className={`${styles["filter-wrapper"]} ${styles[isFilterOpen]}`}>
             <form className={styles["filter-inner"]}>
                 <div>
-                    {brands.length ? (
+                    {/* {brands.length ? (
                         <Dropdown
                             title="Бренд"
                             data={brands}
@@ -123,12 +125,12 @@ function Filter({
                         />
                     ) : (
                         <LoadingSpinner width={40} height={40} fill="#fff" />
-                    )}
+                    )} */}
                 </div>
                 <div>
                     {/* Automatically fetching (fetching happens on initial render of the component by the useEffect hook) 
                     all categories and they'r id's and placing them  on the websites filter*/}
-                    {/* {categories.length ? (
+                    {categories.length ? (
                         <Dropdown
                             title="Категории"
                             data={categories}
@@ -138,8 +140,8 @@ function Filter({
                         />
                     ) : (
                         <LoadingSpinner width={40} height={40} fill="#fff" />
-                    )} */}
-                    {
+                    )}
+                    {/* {
                         <Dropdown
                             title="Категории"
                             data={manualCategories}
@@ -147,7 +149,7 @@ function Filter({
                             forProperty="categories"
                             isManual={true}
                         />
-                    }
+                    } */}
                 </div>
                 {/* <div>
                     {attributes.length ? (

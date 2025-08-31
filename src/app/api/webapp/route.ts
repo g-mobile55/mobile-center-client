@@ -26,13 +26,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return {
                 brand: product.brands.map((brand: any) => brand.name).join("/"),
                 name: product.name,
-                color: product.attributes.filter((attribute: any) => attribute.name === "Color")[0]?.options,
+                attributes: product.attributes.map((attribute:any) => attribute.options).join(", "),
                 quantity: product.quantity,
-                capacity:  product.attributes.filter((attribute: any) => attribute.name === "Capacity")[0]?.options,
-                cableLength:  product.attributes.filter((attribute: any) => attribute.name === "Cable Length")[0]?.options,
-                cableType:  product.attributes.filter((attribute: any) => attribute.name === "Cable Type")[0]?.options,
-                cableWattage:  product.attributes.filter((attribute: any) => attribute.name === "Cable Wattage")[0]?.options,
-                for:  product.attributes.filter((attribute: any) => attribute.name === "For Device")[0]?.options,
                 price: product.price,
                 subtotal: product.price * product.quantity,
             }
@@ -45,13 +40,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         worksheet.columns = [
             { key: "brand", header: excelMessages.headers.Brand },
             { key: "name", header: excelMessages.headers.Name },
-            { key: "for", header: excelMessages.headers.For },
-            { key: "color", header: excelMessages.headers.Color },
+            { key: "attributes", header: excelMessages.headers.Attributes },
             { key: "quantity", header: excelMessages.headers.Quantity },
-            { key: "capacity", header: excelMessages.headers.Capacity },
-            { key: "cableLength", header: excelMessages.headers["Cable Length"] },
-            { key: "cableType", header: excelMessages.headers["Cable Type"] },
-            { key: "cableWattage", header: excelMessages.headers["Cable Wattage"] },
             { key: "price", header: excelMessages.headers.Price },
             { key: "subtotal", header: excelMessages.headers.Subtotal },
         ];
@@ -105,3 +95,93 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return Response.error();
     }
 }
+
+// OLD WAY
+// export async function POST(req: NextRequest, res: NextResponse) {
+//     const data = await req.json();
+//     const { user } = data;
+
+//     const products: Products[] = data.kart.map((product: any) => {
+//         // prettier-ignore
+//         return {
+//                 brand: product.brands.map((brand: any) => brand.name).join("/"),
+//                 name: product.name,
+//                 color: product.attributes.filter((attribute: any) => attribute.name === "Color")[0]?.options,
+//                 quantity: product.quantity,
+//                 capacity:  product.attributes.filter((attribute: any) => attribute.name === "Capacity")[0]?.options,
+//                 cableLength:  product.attributes.filter((attribute: any) => attribute.name === "Cable Length")[0]?.options,
+//                 cableType:  product.attributes.filter((attribute: any) => attribute.name === "Cable Type")[0]?.options,
+//                 cableWattage:  product.attributes.filter((attribute: any) => attribute.name === "Cable Wattage")[0]?.options,
+//                 for:  product.attributes.filter((attribute: any) => attribute.name === "For Device")[0]?.options,
+//                 price: product.price,
+//                 subtotal: product.price * product.quantity,
+//             }
+//     });
+
+//     try {
+//         const workbook = new Excel.Workbook();
+//         const worksheet = workbook.addWorksheet("Invoice");
+
+//         worksheet.columns = [
+//             { key: "brand", header: excelMessages.headers.Brand },
+//             { key: "name", header: excelMessages.headers.Name },
+//             { key: "for", header: excelMessages.headers.For },
+//             { key: "color", header: excelMessages.headers.Color },
+//             { key: "quantity", header: excelMessages.headers.Quantity },
+//             { key: "capacity", header: excelMessages.headers.Capacity },
+//             { key: "cableLength", header: excelMessages.headers["Cable Length"] },
+//             { key: "cableType", header: excelMessages.headers["Cable Type"] },
+//             { key: "cableWattage", header: excelMessages.headers["Cable Wattage"] },
+//             { key: "price", header: excelMessages.headers.Price },
+//             { key: "subtotal", header: excelMessages.headers.Subtotal },
+//         ];
+
+//         products.forEach((item) => {
+//             worksheet.addRow({ ...item, price: `${item.price}₽`, subtotal: `${item.subtotal}₽` });
+//         });
+
+//         const total = products.reduce((previousValue: number, currentValue: Products) => {
+//             // @ts-expect-error
+//             return previousValue + currentValue.subtotal;
+//         }, 0);
+
+//         worksheet.addRow({});
+//         worksheet.addRow({ price: excelMessages.headers.Total, subtotal: `${total}₽` });
+
+//         const fileBuffer = await workbook.xlsx.writeBuffer();
+//         const date = new Date();
+//         const day = date.getUTCDate();
+//         const month = date.getUTCMonth() + 1;
+//         const year = date.getUTCFullYear();
+
+//         const fileName = `invoice-${user.first_name}-${day}-${month}-${year}.xlsx`;
+
+//         // @ts-expect-error
+//         await bot.api.sendDocument(user.id, new InputFile(fileBuffer, fileName), {
+//             caption: botMessages.orderAccepted,
+//         });
+
+//         const chat = await bot.api.getChat(user.id);
+//         const { username, has_private_forwards, id, first_name } = chat;
+//         const messageToSend = botMessages.adminChat.msgIncomingInvoice(
+//             username,
+//             has_private_forwards,
+//             id,
+//             first_name
+//         );
+
+//         await bot.api.sendMessage(
+//             // @ts-expect-error
+//             process.env.MC_ADMIN_CHAT_ID,
+//             messageToSend,
+//             { parse_mode: "HTML" }
+//         );
+//         // prettier-ignore
+//         // @ts-expect-error
+//         await bot.api.sendDocument(process.env.MC_ADMIN_CHAT_ID, new InputFile(fileBuffer, fileName));
+//         return Response.json({ data: "All good." });
+//     } catch (error) {
+//         console.log(error);
+//         return Response.error();
+//     }
+// }

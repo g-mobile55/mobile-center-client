@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import AddToCartBtn from "../Buttons/AddToCartBtn";
 import { ProductT } from "@/lib/types/woo.types";
-import { ChangeEvent, MouseEvent, useState, useCallback, useTransition } from "react";
+import { ChangeEvent, MouseEvent, useState, useCallback, useTransition, useEffect } from "react";
 import debounce from "lodash.debounce";
 import { useDispatch } from "react-redux";
 import { addToKart } from "@/lib/redux/features/kartSlice";
@@ -19,14 +19,38 @@ function ProductCard(product: ProductT) {
     const dispatch = useDispatch();
     const [variations, setVariations] = useState();
     const [isPending, startTransition] = useTransition();
-
-    const [state, setState] = useState({
-        ...product,
-        attributes: attributes.map((attribute: any) => {
-            return { ...attribute, options: attribute.options[0] };
-        }),
-        quantity: 1,
+    const [state, setState] = useState(() => {
+        return {
+            ...product,
+            attributes: attributes.map((attribute: any) => {
+                return { ...attribute, options: attribute.options[0] };
+            }),
+            quantity: 1,
+        };
     });
+
+    useEffect(() => {
+        startTransition(async () => {
+            const { data } = await axiosAPI(`products/${state.id}/variations`);
+            setVariations(data);
+
+            setState((state: any) => {
+                const newState = {
+                    ...state,
+                };
+
+                const reducedToName = newState.attributes.map((item) => item.options).join(", ");
+
+                const filteredVariation = data.filter(
+                    (variation: any) => variation.name === reducedToName
+                )[0];
+
+                if (filteredVariation) newState.price = filteredVariation.price;
+
+                return newState;
+            });
+        });
+    }, []);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         if (!variations) {

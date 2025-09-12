@@ -53,36 +53,8 @@ function ProductCard(product: ProductT) {
     }, []);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        // if (!variations) {
-        //     startTransition(async () => {
-        //         const { data } = await axiosAPI(`products/${state.id}/variations`);
-        //         setVariations(data);
+        console.log(state);
 
-        //         setState((state: any) => {
-        //             const newState = {
-        //                 ...state,
-        //                 attributes: state.attributes.map((attribute: any) => {
-        //                     if (attribute.name === e.target.name) {
-        //                         return { ...attribute, options: e.target.value };
-        //                     }
-        //                     return attribute;
-        //                 }),
-        //             };
-
-        //             const reducedToName = newState.attributes
-        //                 .map((item) => item.options)
-        //                 .join(", ");
-
-        //             const filteredVariation = data.filter(
-        //                 (variation: any) => variation.name === reducedToName
-        //             )[0];
-
-        //             if (filteredVariation) newState.price = filteredVariation.price;
-
-        //             return newState;
-        //         });
-        //     });
-        // } else {
         setState((state: any) => {
             const newState = {
                 ...state,
@@ -104,7 +76,6 @@ function ProductCard(product: ProductT) {
 
             return newState;
         });
-        // }
     };
 
     const handleAlert = () => {
@@ -118,6 +89,7 @@ function ProductCard(product: ProductT) {
     const debouncedAlert = useCallback(debounce(handleAlert, 350), []);
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+        console.log(state);
         e.preventDefault();
         dispatch(addToKart(state));
         debouncedAlert();
@@ -147,31 +119,53 @@ function ProductCard(product: ProductT) {
                 <p>{name}</p>
             </div>
             <ul className={styles.attributes}>
-                {attributes.map((attribute: any, index: number) => {
-                    return (
-                        <li key={index} className={styles.attribute}>
-                            {/* {attribute.name}: */}
-                            {attribute.options.length > 1 ? (
-                                <select
-                                    name={attribute.name}
-                                    value={
-                                        // @ts-expect-error
-                                        state[attribute.name]
-                                    }
-                                    onChange={handleChange}
-                                >
-                                    {attribute.options.map((option: string) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                attribute.options
-                            )}
-                        </li>
-                    );
-                })}
+                {variations
+                    ? attributes.map((attribute: any, index: number) => {
+                          return (
+                              <li key={index} className={styles.attribute}>
+                                  {/* {attribute.name}: */}
+                                  {attribute.options.length > 1 ? (
+                                      <select
+                                          name={attribute.name}
+                                          value={
+                                              // @ts-expect-error
+                                              state[attribute.name]
+                                          }
+                                          onChange={handleChange}
+                                      >
+                                          {attribute.options.map((option: string) => {
+                                              const tentativeAttributes = state.attributes.map(
+                                                  (a: any) =>
+                                                      a.name === attribute.name
+                                                          ? { ...a, options: option }
+                                                          : a
+                                              );
+                                              const reducedToName = tentativeAttributes
+                                                  .map((a: any) => a.options)
+                                                  .join(", ");
+
+                                              const isValid = variations.some(
+                                                  (v: any) => v.name === reducedToName
+                                              );
+
+                                              return (
+                                                  <option
+                                                      key={option}
+                                                      value={option}
+                                                      disabled={!isValid}
+                                                  >
+                                                      {option}
+                                                  </option>
+                                              );
+                                          })}
+                                      </select>
+                                  ) : (
+                                      attribute.options
+                                  )}
+                              </li>
+                          );
+                      })
+                    : "LOADING"}
             </ul>
             <div className={styles["price-wrapper"]}>
                 <div className={styles.price}>

@@ -32,20 +32,15 @@ function ProductCard(product: ProductT) {
     useEffect(() => {
         startTransition(async () => {
             const { data } = await axiosAPI(`products/${state.id}/variations`);
-            setVariations(data);
+            const sortedData = data.toSorted((a, b) => a.name.localeCompare(b.name));
+            setVariations(sortedData);
 
             setState((state: any) => {
                 const newState = {
                     ...state,
                 };
 
-                const reducedToName = newState.attributes.map((item) => item.options).join(", ");
-
-                const filteredVariation = data.filter(
-                    (variation: any) => variation.name === reducedToName
-                )[0];
-
-                if (filteredVariation) newState.price = filteredVariation.price;
+                newState.price = sortedData[0].price;
 
                 return newState;
             });
@@ -53,14 +48,16 @@ function ProductCard(product: ProductT) {
     }, []);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        console.log(state);
+        const newAttributes = JSON.parse(e.target.value);
 
         setState((state: any) => {
             const newState = {
                 ...state,
                 attributes: state.attributes.map((attribute: any) => {
-                    if (attribute.name === e.target.name) {
-                        return { ...attribute, options: e.target.value };
+                    for (let i = 0; i < state.attributes.length; i++) {
+                        if (attribute.name === newAttributes[i].name) {
+                            return { ...attribute, options: newAttributes[i].option };
+                        }
                     }
                     return attribute;
                 }),
@@ -89,7 +86,6 @@ function ProductCard(product: ProductT) {
     const debouncedAlert = useCallback(debounce(handleAlert, 350), []);
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-        console.log(state);
         e.preventDefault();
         dispatch(addToKart(state));
         debouncedAlert();
@@ -119,53 +115,22 @@ function ProductCard(product: ProductT) {
                 <p>{name}</p>
             </div>
             <ul className={styles.attributes}>
-                {variations
-                    ? attributes.map((attribute: any, index: number) => {
-                          return (
-                              <li key={index} className={styles.attribute}>
-                                  {/* {attribute.name}: */}
-                                  {attribute.options.length > 1 ? (
-                                      <select
-                                          name={attribute.name}
-                                          value={
-                                              // @ts-expect-error
-                                              state[attribute.name]
-                                          }
-                                          onChange={handleChange}
-                                      >
-                                          {attribute.options.map((option: string) => {
-                                              const tentativeAttributes = state.attributes.map(
-                                                  (a: any) =>
-                                                      a.name === attribute.name
-                                                          ? { ...a, options: option }
-                                                          : a
-                                              );
-                                              const reducedToName = tentativeAttributes
-                                                  .map((a: any) => a.options)
-                                                  .join(", ");
-
-                                              const isValid = variations.some(
-                                                  (v: any) => v.name === reducedToName
-                                              );
-
-                                              return (
-                                                  <option
-                                                      key={option}
-                                                      value={option}
-                                                      disabled={!isValid}
-                                                  >
-                                                      {option}
-                                                  </option>
-                                              );
-                                          })}
-                                      </select>
-                                  ) : (
-                                      attribute.options
-                                  )}
-                              </li>
-                          );
-                      })
-                    : "LOADING"}
+                {variations ? (
+                    <select name="variation-card" onChange={handleChange}>
+                        {variations.map((variation, index) => {
+                            return (
+                                <option
+                                    value={JSON.stringify(variation.attributes, null, 2)}
+                                    key={index}
+                                >
+                                    {variation.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : (
+                    "ЗАГРУЗКА"
+                )}
             </ul>
             <div className={styles["price-wrapper"]}>
                 <div className={styles.price}>

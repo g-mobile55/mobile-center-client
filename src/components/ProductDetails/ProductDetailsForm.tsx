@@ -29,20 +29,15 @@ function ProductDetailsForm({ product }: { product: any }) {
     useEffect(() => {
         startTransition(async () => {
             const { data } = await axiosAPI(`products/${state.id}/variations`);
-            setVariations(data);
+            const sortedData = data.toSorted((a, b) => a.name.localeCompare(b.name));
+            setVariations(sortedData);
 
             setState((state: any) => {
                 const newState = {
                     ...state,
                 };
 
-                const reducedToName = newState.attributes.map((item) => item.options).join(", ");
-
-                const filteredVariation = data.filter(
-                    (variation: any) => variation.name === reducedToName
-                )[0];
-
-                if (filteredVariation) newState.price = filteredVariation.price;
+                newState.price = sortedData[0].price;
 
                 return newState;
             });
@@ -50,42 +45,16 @@ function ProductDetailsForm({ product }: { product: any }) {
     }, []);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        // if (!variations) {
-        //     startTransition(async () => {
-        //         const { data } = await axiosAPI(`products/${state.id}/variations`);
-        //         setVariations(data);
+        const newAttributes = JSON.parse(e.target.value);
 
-        //         setState((state: any) => {
-        //             const newState = {
-        //                 ...state,
-        //                 attributes: state.attributes.map((attribute: any) => {
-        //                     if (attribute.name === e.target.name) {
-        //                         return { ...attribute, options: e.target.value };
-        //                     }
-        //                     return attribute;
-        //                 }),
-        //             };
-
-        //             const reducedToName = newState.attributes
-        //                 .map((item) => item.options)
-        //                 .join(", ");
-
-        //             const filteredVariation = data.filter(
-        //                 (variation: any) => variation.name === reducedToName
-        //             )[0];
-
-        //             if (filteredVariation) newState.price = filteredVariation.price;
-
-        //             return newState;
-        //         });
-        //     });
-        // } else {
         setState((state: any) => {
             const newState = {
                 ...state,
                 attributes: state.attributes.map((attribute: any) => {
-                    if (attribute.name === e.target.name) {
-                        return { ...attribute, options: e.target.value };
+                    for (let i = 0; i < state.attributes.length; i++) {
+                        if (attribute.name === newAttributes[i].name) {
+                            return { ...attribute, options: newAttributes[i].option };
+                        }
                     }
                     return attribute;
                 }),
@@ -101,7 +70,6 @@ function ProductDetailsForm({ product }: { product: any }) {
 
             return newState;
         });
-        // }
     };
 
     const handleAlert = () => {
@@ -134,28 +102,22 @@ function ProductDetailsForm({ product }: { product: any }) {
                 <p className={styles.price}>{state.price}&#8381;</p>
                 <p>{product.categories.name}</p>
                 <ul>
-                    {product.attributes.map((attribute: any, index: number) => {
-                        return (
-                            <li key={index} className={styles.attribute}>
-                                <span className={styles.title}>{attribute.name}:</span>
-                                {attribute.options.length > 1 ? (
-                                    <select
-                                        name={attribute.name}
-                                        value={state[attribute.name]}
-                                        onChange={handleChange}
+                    {variations ? (
+                        <select name="variation-card" onChange={handleChange}>
+                            {variations.map((variation, index) => {
+                                return (
+                                    <option
+                                        value={JSON.stringify(variation.attributes, null, 2)}
+                                        key={index}
                                     >
-                                        {attribute.options.map((option: string) => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <span>{attribute.options[0]}</span>
-                                )}
-                            </li>
-                        );
-                    })}
+                                        {variation.name}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    ) : (
+                        "ЗАГРУЗКА"
+                    )}
                 </ul>
                 <p>
                     <span className={styles.title}>Категории</span>:{" "}
